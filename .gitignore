@@ -65,3 +65,8 @@ package-lock.json
 *v8.log
 /lib/
 node_modules/
+build
+.vscode
+.idea
+.env
+.VSCodeCounter
