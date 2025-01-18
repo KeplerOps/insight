@@ -475,7 +475,25 @@
 <a name='L410'></a><a href='#L410'>410</a>
 <a name='L411'></a><a href='#L411'>411</a>
 <a name='L412'></a><a href='#L412'>412</a>
-<a name='L413'></a><a href='#L413'>413</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L413'></a><a href='#L413'>413</a>
+<a name='L414'></a><a href='#L414'>414</a>
+<a name='L415'></a><a href='#L415'>415</a>
+<a name='L416'></a><a href='#L416'>416</a>
+<a name='L417'></a><a href='#L417'>417</a>
+<a name='L418'></a><a href='#L418'>418</a>
+<a name='L419'></a><a href='#L419'>419</a>
+<a name='L420'></a><a href='#L420'>420</a>
+<a name='L421'></a><a href='#L421'>421</a>
+<a name='L422'></a><a href='#L422'>422</a>
+<a name='L423'></a><a href='#L423'>423</a>
+<a name='L424'></a><a href='#L424'>424</a>
+<a name='L425'></a><a href='#L425'>425</a>
+<a name='L426'></a><a href='#L426'>426</a>
+<a name='L427'></a><a href='#L427'>427</a>
+<a name='L428'></a><a href='#L428'>428</a>
+<a name='L429'></a><a href='#L429'>429</a>
+<a name='L430'></a><a href='#L430'>430</a>
+<a name='L431'></a><a href='#L431'>431</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -627,6 +645,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1141,7 +1177,7 @@ In your designs, use modern practices and patterns. Explicitly state the use of 
     type: 'assessment',
     content: `As a world-class software architect, on a scale of 0 to 10, assess the readiness of this design to support design at the next level of abstraction, or if we are at the lowest level of abstraction (private methods), to support unit test design.`
   },
-  testDesign: {
+  unitTestDesign: {
     phase: DevelopmentPhase.UnitTestDesign,
     type: 'design',
     content: `As a world-class staff QA engineer, design the unit test unit suite to provide comprehensive coverage for the design and requirements. DO NOT IMPLEMENT. Provide the test files, test classes, fixtures, test method signatures, and full documentation. Cover all expected behaviour, exceptions and edge cases. Remember, the methods in the implementation classes are INTENTIONALLY stubbed. This is TDD. Write the test for the EXPECTED behaviour once they are implemented, not the stubbed behaviour.
@@ -1150,10 +1186,28 @@ Design a full set of shared mocks, utilities or fixtures first. Then design unit
 &nbsp;
 DO NOT IMPLEMENT unit tests. This is purely design. Implementing the tests will be another phase. Include a dir structure for the tests.`
   },
-  testAssessment: {
+  unitTestAssessment: {
     phase: DevelopmentPhase.UnitTestDesign,
     type: 'assessment',
     content: `As a world class principal software engineer, on a scale of 0 to 10 rate the design of these unit tests with respect to their consistency and coverage of the design and requirements, and their readiness to support unit test implementation.`
+  },
+  unitTestImplementationDesign: {
+    phase: DevelopmentPhase.UnitTestImplementation,
+    type: 'design',
+    content: `As a world-class QA engineer, implement the shared mocks, utilities or fixtures for the unit tests and the unit tests. Cover all the expected behaviour as documented in the test designs. If the designs are unclear, look at the concept, requirements, and implementation stubs. But remember, we are not testing that the stubs throw not implemented exceptions, we are setting up for TDD by testing the expected behaviour of the eventual implementations.
+&nbsp;
+Use the shared utilities and mocks. Extend or add to them as needed. Remember the real implementations will use cross-cutting concerns (e.g. logging, error handling, metrics, etc.) available in the repo if any.
+&nbsp;
+If you make any changes to shared utilities or mocks, check all the tests that use them to ensure they still work as expected.
+&nbsp;
+If there is a package manager ALWAYS use it to manage dependencies.
+&nbsp;
+Run the tests to ensure they fail. All stubs will throw not implemented exceptions, which is NOT the expected behaviour for the system.`
+  },
+  unitTestImplementationAssessment: {
+    phase: DevelopmentPhase.UnitTestImplementation,
+    type: 'assessment',
+    content: `As a world-class QA engineer, on a scale of 0 to 10 rate the coverage provided to the design and requirements by these unit tests and their readiness to validate system implementation.`
   },
   testImplementationDesign: {
     phase: DevelopmentPhase.UnitTestImplementation,
@@ -1185,7 +1239,7 @@ DO NOT IMPLEMENT unit tests. This is purely design. Implementing the tests will 
     content: `As a world-class QA engineer, on a scale of 0 to 10 rate the design of these integration tests with respect to their consistency and coverage of the design and requirements, and their readiness to support integration test implementation.`
   },
   integrationTestImplementation: {
-    phase: DevelopmentPhase.IntegrationTestDesign,
+    phase: DevelopmentPhase.Integration,
     type: 'implementation',
     content: `As a world-class QA engineer, implement the shared utilities and mocks for the integration tests and the integration tests. These integration tests are meant to cover one-hop interactions between components. Use your judgement for the appropriate level of coverage. We are are not testing end to end interactions. That will come later.
 &nbsp;
@@ -1306,7 +1360,7 @@ export const QUALITY_GATES: { [key: string]: QualityGate } = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-01-18T06:13:04.139Z
+                at 2025-01-18T06:51:30.796Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

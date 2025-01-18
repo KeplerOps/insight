@@ -233,6 +233,72 @@ describe('PhaseManager', () => {
       );
       expect(prompt).toBeNull();
     });
+
+    test('retrieves unit test design prompts', () => {
+      const designPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.UnitTestDesign,
+        'design'
+      );
+      expect(designPrompt).toBeDefined();
+      expect(designPrompt).toContain('As a world-class staff QA engineer, design the unit test unit suite');
+
+      const assessmentPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.UnitTestDesign,
+        'assessment'
+      );
+      expect(assessmentPrompt).toBeDefined();
+      expect(assessmentPrompt).toContain('rate the design of these unit tests');
+    });
+
+    test('retrieves unit test implementation prompts', () => {
+      const designPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.UnitTestImplementation,
+        'design'
+      );
+      expect(designPrompt).toBeDefined();
+      expect(designPrompt).toContain('implement the shared mocks, utilities or fixtures');
+
+      const assessmentPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.UnitTestImplementation,
+        'assessment'
+      );
+      expect(assessmentPrompt).toBeDefined();
+      expect(assessmentPrompt).toContain('rate the coverage provided');
+    });
+
+    test('retrieves integration test prompts', () => {
+      const designPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.IntegrationTestDesign,
+        'design'
+      );
+      expect(designPrompt).toBeDefined();
+      expect(designPrompt).toContain('design the integration test suite');
+
+      const assessmentPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.IntegrationTestDesign,
+        'assessment'
+      );
+      expect(assessmentPrompt).toBeDefined();
+      expect(assessmentPrompt).toContain('rate the design of these integration tests');
+    });
+
+    test('retrieves implementation prompts', () => {
+      const implementationPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.Implementation,
+        'implementation'
+      );
+      expect(implementationPrompt).toBeDefined();
+      expect(implementationPrompt).toContain('make a plan to implement the system');
+    });
+
+    test('retrieves integration implementation prompts', () => {
+      const implementationPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.Integration,
+        'implementation'
+      );
+      expect(implementationPrompt).toBeDefined();
+      expect(implementationPrompt).toContain('implement the shared utilities and mocks for the integration tests');
+    });
   });
 
   describe('Error Handling', () => {
