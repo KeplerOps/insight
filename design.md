@@ -1,221 +1,221 @@
-# Design: Cline Development Process Tools
+# Workflow Automation Design
 
-## Overview
+## Core Concept
 
-This MCP server will enhance Cline's capabilities by automating the software development process workflow defined in GOAL_STATE.md using the prompts from PROMPTS.md. The server will provide tools that can be naturally invoked during development conversations, manage process artifacts, and ensure quality through systematic gates and checks.
+A lightweight MCP server that provides tools for automating prompt sequences and workflow decisions. The server doesn't handle persistence, state management, or file operations - it purely orchestrates the workflow while Cline handles everything else:
 
-## Core Components
+1. Cline executes the actual prompts
+2. Cline performs all file operations (read_file, write_to_file, replace_in_file)
+3. Cline maintains context between steps
+4. Cline handles any required code analysis and modifications
 
-### 1. Process State Manager
+The server just tells Cline "run this prompt next" and "if the rating is X, then run prompt Y", while Cline handles all the actual work.
 
-Tracks the current phase of development and maintains context across the development lifecycle.
+## Tools
 
-#### Responsibilities
-- Track current development phase (concept, requirements, design, etc.)
-- Maintain context and history of decisions
-- Store and manage process artifacts
-- Track gate assessments and scores
+### run_prompt_sequence
+Executes a sequence of prompts with conditional branching.
 
-#### Implementation
+Input:
 ```typescript
-interface ProcessState {
-  phase: DevelopmentPhase;
-  context: {
-    concept?: ConceptBrief;
-    requirements?: RequirementsDoc;
-    design?: DesignDoc;
-    tests?: TestSuite;
-    implementation?: Implementation;
-  };
-  artifacts: Map<string, string>; // path -> content
-  gateScores: Map<string, Assessment[]>;
-}
-```
-
-### 2. Tools
-
-#### 2.1 Concept Assessment
-Evaluates concept readiness using expert prompts.
-
-```typescript
-interface ConceptAssessmentTool {
-  input: {};  // No input needed, uses current process state
-  output: {
-    scores: {
-      clarity: number;
-      understanding: number;
-      goalAlignment: number;
-      readiness: number;
-    };
-    explanation: string;
-    recommendations?: string[];
+{
+  sequence: {
+    name: string;        // Name of the sequence (e.g. "concept_assessment")
+    steps: Array<{
+      prompt: string;    // The prompt to run
+      save_to?: string;  // Optional file path to save output
+      condition?: {      // Optional condition for running this step
+        type: "rating";  // Type of condition
+        min_value: number;
+        max_value: number;
+      }
+    }>;
   }
 }
 ```
 
-#### 2.2 Brief Generation
-Creates structured product briefs from discussions.
-
+Example Usage:
 ```typescript
-interface BriefGenerationTool {
-  input: {};  // Uses conversation history from process state
-  output: {
-    brief: {
-      problemStatement: string;
-      valueProposition: string;
-      successCriteria: string[];
-      constraints: string[];
-    };
-    filePath: string;  // Where the brief was saved
+// Concept Assessment Sequence
+{
+  sequence: {
+    name: "concept_assessment",
+    steps: [
+      {
+        prompt: "concept_refinement",
+        save_to: "docs/concept/brief.md"
+      },
+      {
+        prompt: "concept_assessment"
+      },
+      {
+        prompt: "requirements_creation",
+        save_to: "docs/requirements/requirements.md",
+        condition: {
+          type: "rating",
+          min_value: 9,
+          max_value: 10
+        }
+      }
+    ]
   }
 }
 ```
 
-#### 2.3 Requirements Generation
-Creates formal requirements documents.
+### define_workflow
+Defines a reusable workflow that can be executed later.
 
+Input:
 ```typescript
-interface RequirementsGenerationTool {
-  input: {
-    format?: "markdown" | "pdf";  // Optional output format
-  };
-  output: {
-    requirements: {
-      sections: {
-        title: string;
-        content: string;
-        subsections?: Section[];
-      }[];
-    };
-    filePath: string;
+{
+  workflow: {
+    name: string;
+    sequences: string[];  // Names of sequences to run
+    transitions: Array<{
+      from: string;      // Source sequence
+      to: string;        // Target sequence
+      condition: {       // Condition for transition
+        type: string;
+        value: any;
+      }
+    }>;
   }
 }
 ```
 
-#### 2.4 Requirements Assessment
-Evaluates requirements quality and completeness.
-
+Example Usage:
 ```typescript
-interface RequirementsAssessmentTool {
-  input: {};  // Uses requirements from process state
-  output: {
-    scores: {
-      clarity: number;
-      completeness: number;
-      consistency: number;
-      implementability: number;
-    };
-    issues: {
-      severity: "high" | "medium" | "low";
-      description: string;
-      recommendation: string;
-    }[];
+{
+  workflow: {
+    name: "concept_to_requirements",
+    sequences: ["concept_assessment", "requirements_creation", "requirements_assessment"],
+    transitions: [
+      {
+        from: "concept_assessment",
+        to: "requirements_creation",
+        condition: {
+          type: "rating",
+          value: 9
+        }
+      }
+    ]
   }
 }
 ```
 
-### 3. Resources
+### execute_workflow
+Executes a defined workflow.
 
-#### 3.1 Process Templates
+Input:
 ```typescript
-interface ProcessTemplates {
-  conceptBrief: string;
-  requirementsDoc: string;
-  designDoc: string;
-  testPlan: string;
+{
+  name: string;  // Name of workflow to execute
+  context?: any; // Optional context to pass to the workflow
 }
 ```
 
-#### 3.2 Quality Gates
+## Implementation
+
+1. Server focuses purely on workflow orchestration:
+   - Defining sequences of prompts to run
+   - Managing conditional branching based on responses
+   - Tracking workflow progress
+
+2. Cline handles all operations:
+   - Executing prompts and processing responses
+   - Reading and writing files
+   - Making in-place edits when needed
+   - Maintaining context between steps
+   - Managing state and persistence
+
+3. Interaction Flow:
+   a. Server tells Cline "run the requirements_creation prompt"
+   b. Cline runs prompt and saves output to requirements.md
+   c. Server tells Cline "run the requirements_assessment prompt"
+   d. Cline runs assessment and gets rating
+   e. If rating < 9, server tells Cline "run the requirements_refinement prompt"
+   f. Cline makes necessary edits to requirements.md using replace_in_file
+   g. Process continues based on workflow definition
+
+## Example Workflows
+
+### Concept to Requirements
 ```typescript
-interface QualityGate {
-  name: string;
-  criteria: {
-    metric: string;
-    threshold: number;
-    weight: number;
-  }[];
-  assessmentPrompt: string;
+{
+  workflow: {
+    name: "concept_to_requirements",
+    sequences: [
+      {
+        name: "concept_refinement",
+        steps: [
+          {
+            prompt: "concept_refinement",
+            save_to: "docs/concept/brief.md"
+          },
+          {
+            prompt: "concept_assessment"
+          }
+        ]
+      },
+      {
+        name: "requirements_creation",
+        steps: [
+          {
+            prompt: "requirements_creation",
+            save_to: "docs/requirements/requirements.md"
+          },
+          {
+            prompt: "requirements_assessment"
+          }
+        ]
+      }
+    ],
+    transitions: [
+      {
+        from: "concept_refinement",
+        to: "requirements_creation",
+        condition: {
+          type: "rating",
+          value: 9
+        }
+      }
+    ]
+  }
 }
 ```
 
-## Integration Points
+### Requirements Review
+```typescript
+{
+  workflow: {
+    name: "requirements_review",
+    sequences: [
+      {
+        name: "requirements_assessment",
+        steps: [
+          {
+            prompt: "requirements_assessment"
+          },
+          {
+            prompt: "requirements_refinement",
+            save_to: "docs/requirements/requirements.md",
+            condition: {
+              type: "rating",
+              min_value: 0,
+              max_value: 8
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+```
 
-### 1. Natural Language Triggers
+## Benefits
 
-The server will recognize natural language cues in conversations to suggest or invoke appropriate tools:
-
-- "Is this concept ready?" -> Concept Assessment
-- "Create a brief from our discussion" -> Brief Generation
-- "Let's write requirements" -> Requirements Generation
-- "Are these requirements good enough?" -> Requirements Assessment
-
-### 2. File Management
-
-- Automatically create and update process artifacts in the project structure
-- Maintain version history of documents
-- Generate standardized filenames and paths
-
-### 3. Quality Gates
-
-- Integrate with the development workflow to enforce quality gates
-- Track and persist gate scores
-- Provide clear feedback on gate failures
-- Guide users to address quality issues
-
-## Implementation Plan
-
-1. Core Infrastructure
-   - Set up TypeScript project with MCP SDK
-   - Implement ProcessState management
-   - Create file management utilities
-
-2. Tool Implementation
-   - Implement each tool one at a time
-   - Add comprehensive error handling
-   - Include detailed logging
-
-3. Integration Features
-   - Add natural language recognition
-   - Implement quality gates
-   - Create process guidance system
-
-4. Testing & Documentation
-   - Unit tests for each component
-   - Integration tests for workflows
-   - User documentation
-   - Example workflows
-
-## Security Considerations
-
-1. File Access
-   - Only access files within project scope
-   - Validate all file paths
-   - Maintain audit logs
-
-2. Process State
-   - Persist state securely
-   - Validate state transitions
-   - Handle concurrent access
-
-3. Quality Gates
-   - Prevent gate bypassing
-   - Secure assessment records
-   - Validate gate criteria
-
-## Future Enhancements
-
-1. Additional Tools
-   - Design assessment
-   - Test coverage analysis
-   - Implementation quality checks
-
-2. Process Improvements
-   - Machine learning for better prompt timing
-   - Automated quality improvement suggestions
-   - Historical analysis of development patterns
-
-3. Integration Expansions
-   - CI/CD pipeline integration
-   - Project management tool integration
-   - Team collaboration features
+1. Simple, focused functionality
+2. Leverages Cline's existing capabilities
+3. Flexible workflow definitions
+4. Easy to extend with new conditions
+5. No complex state management
