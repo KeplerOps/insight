@@ -218,5 +218,84 @@ Rationale: A test rationale
         outputPath: expect.stringContaining('docs/requirements/requirements.md')
       });
     });
+
+    it('throws error when prompt is not found', async () => {
+      const mockPhaseManager = {
+        getContext: jest.fn().mockReturnValue({ problemStatement: 'test' }),
+        getPromptForPhase: jest.fn().mockReturnValue(null)
+      };
+      (server as any).phaseManager = mockPhaseManager;
+
+      await expect((server as any).handleGenerateRequirements())
+        .rejects
+        .toThrow('Requirements creation prompt not found');
+    });
+  });
+
+  describe('requirements assessment', () => {
+    it('returns prompt and context for requirements assessment', async () => {
+      const mockPhaseManager = {
+        getPromptForPhase: jest.fn().mockReturnValue('test assessment prompt'),
+        getContext: jest.fn().mockReturnValue({ requirements: [] }),
+        getCurrentPhase: jest.fn().mockReturnValue(DevelopmentPhase.Requirements)
+      };
+      (server as any).phaseManager = mockPhaseManager;
+
+      const result = await (server as any).handleAssessRequirements();
+      
+      expect(mockPhaseManager.getPromptForPhase).toHaveBeenCalledWith(
+        DevelopmentPhase.Requirements,
+        'assessment'
+      );
+      expect(result).toEqual({
+        content: [{
+          type: 'text',
+          text: expect.stringContaining('test assessment prompt')
+        }]
+      });
+    });
+
+    it('throws error when prompt is not found', async () => {
+      const mockPhaseManager = {
+        getPromptForPhase: jest.fn().mockReturnValue(null)
+      };
+      (server as any).phaseManager = mockPhaseManager;
+
+      await expect((server as any).handleAssessRequirements())
+        .rejects
+        .toThrow('Requirements assessment prompt not found');
+    });
+  });
+
+  describe('error handling', () => {
+    it('handles SIGINT signal', async () => {
+      const mockClose = jest.spyOn(server.getServer(), 'close');
+      const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+      
+      // Simulate SIGINT
+      process.emit('SIGINT');
+      
+      // Wait for any async handlers
+      await new Promise(resolve => setTimeout(resolve, 0));
+      
+      expect(mockClose).toHaveBeenCalled();
+      expect(mockExit).toHaveBeenCalledWith(0);
+      
+      // Cleanup
+      mockExit.mockRestore();
+    });
+  });
+
+  describe('concept assessment', () => {
+    it('throws error when prompt is not found', async () => {
+      const mockPhaseManager = {
+        getPromptForPhase: jest.fn().mockReturnValue(null)
+      };
+      (server as any).phaseManager = mockPhaseManager;
+
+      await expect((server as any).handleConceptAssessment())
+        .rejects
+        .toThrow('Concept assessment prompt not found');
+    });
   });
 });

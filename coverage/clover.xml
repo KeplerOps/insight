@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1737180246596" clover="3.2.0">
-  <project timestamp="1737180246596" name="All files">
-    <metrics statements="139" coveredstatements="125" conditionals="54" coveredconditionals="44" methods="41" coveredmethods="38" elements="234" coveredelements="207" complexity="0" loc="139" ncloc="139" packages="2" files="3" classes="3"/>
+<coverage generated="1737180319273" clover="3.2.0">
+  <project timestamp="1737180319273" name="All files">
+    <metrics statements="139" coveredstatements="130" conditionals="54" coveredconditionals="47" methods="41" coveredmethods="39" elements="234" coveredelements="216" complexity="0" loc="139" ncloc="139" packages="2" files="3" classes="3"/>
     <package name="src">
-      <metrics statements="54" coveredstatements="49" conditionals="22" coveredconditionals="18" methods="17" coveredmethods="15"/>
+      <metrics statements="54" coveredstatements="54" conditionals="22" coveredconditionals="21" methods="17" coveredmethods="16"/>
       <file name="index.ts" path="/home/atomik/src/insight/src/index.ts">
-        <metrics statements="54" coveredstatements="49" conditionals="22" coveredconditionals="18" methods="17" coveredmethods="15"/>
-        <line num="21" count="10" type="cond" truecount="2" falsecount="0"/>
-        <line num="22" count="10" type="stmt"/>
-        <line num="26" count="10" type="stmt"/>
-        <line num="38" count="10" type="stmt"/>
-        <line num="41" count="10" type="stmt"/>
-        <line num="42" count="10" type="stmt"/>
-        <line num="43" count="0" type="stmt"/>
-        <line num="44" count="0" type="stmt"/>
-        <line num="49" count="4" type="stmt"/>
-        <line num="53" count="9" type="stmt"/>
-        <line num="57" count="10" type="stmt"/>
-        <line num="94" count="10" type="stmt"/>
+        <metrics statements="54" coveredstatements="54" conditionals="22" coveredconditionals="21" methods="17" coveredmethods="16"/>
+        <line num="21" count="15" type="cond" truecount="2" falsecount="0"/>
+        <line num="22" count="15" type="stmt"/>
+        <line num="26" count="15" type="stmt"/>
+        <line num="38" count="15" type="stmt"/>
+        <line num="41" count="15" type="stmt"/>
+        <line num="42" count="15" type="stmt"/>
+        <line num="43" count="14" type="stmt"/>
+        <line num="44" count="14" type="stmt"/>
+        <line num="49" count="5" type="stmt"/>
+        <line num="53" count="14" type="stmt"/>
+        <line num="57" count="15" type="stmt"/>
+        <line num="94" count="15" type="stmt"/>
         <line num="95" count="5" type="cond" truecount="5" falsecount="0"/>
         <line num="97" count="1" type="stmt"/>
         <line num="99" count="1" type="stmt"/>
         <line num="101" count="1" type="stmt"/>
         <line num="103" count="1" type="stmt"/>
         <line num="105" count="1" type="stmt"/>
-        <line num="114" count="1" type="stmt"/>
-        <line num="118" count="1" type="cond" truecount="0" falsecount="1"/>
-        <line num="119" count="0" type="stmt"/>
+        <line num="114" count="2" type="stmt"/>
+        <line num="118" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="119" count="1" type="stmt"/>
         <line num="125" count="1" type="stmt"/>
         <line num="127" count="1" type="stmt"/>
         <line num="142" count="3" type="stmt"/>
@@ -37,20 +37,20 @@
         <line num="153" count="1" type="stmt"/>
         <line num="154" count="1" type="stmt"/>
         <line num="156" count="1" type="stmt"/>
-        <line num="170" count="2" type="stmt"/>
-        <line num="171" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="170" count="3" type="stmt"/>
+        <line num="171" count="3" type="cond" truecount="1" falsecount="0"/>
         <line num="172" count="1" type="stmt"/>
-        <line num="178" count="1" type="stmt"/>
-        <line num="182" count="1" type="cond" truecount="0" falsecount="1"/>
-        <line num="183" count="0" type="stmt"/>
+        <line num="178" count="2" type="stmt"/>
+        <line num="182" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="183" count="1" type="stmt"/>
         <line num="189" count="1" type="stmt"/>
         <line num="195" count="1" type="stmt"/>
         <line num="197" count="1" type="stmt"/>
-        <line num="213" count="1" type="stmt"/>
-        <line num="217" count="1" type="cond" truecount="0" falsecount="1"/>
-        <line num="218" count="0" type="stmt"/>
-        <line num="224" count="1" type="stmt"/>
-        <line num="226" count="1" type="stmt"/>
+        <line num="213" count="3" type="stmt"/>
+        <line num="217" count="3" type="cond" truecount="1" falsecount="0"/>
+        <line num="218" count="1" type="stmt"/>
+        <line num="224" count="2" type="stmt"/>
+        <line num="226" count="2" type="stmt"/>
         <line num="241" count="3" type="stmt"/>
         <line num="250" count="4" type="cond" truecount="1" falsecount="1"/>
         <line num="253" count="1" type="cond" truecount="2" falsecount="0"/>
@@ -66,16 +66,16 @@
       <metrics statements="85" coveredstatements="76" conditionals="32" coveredconditionals="26" methods="24" coveredmethods="23"/>
       <file name="phase-manager.ts" path="/home/atomik/src/insight/src/lib/phase-manager.ts">
         <metrics statements="74" coveredstatements="65" conditionals="30" coveredconditionals="24" methods="23" coveredmethods="22"/>
-        <line num="35" count="27" type="stmt"/>
-        <line num="36" count="27" type="stmt"/>
-        <line num="40" count="27" type="stmt"/>
-        <line num="42" count="27" type="stmt"/>
-        <line num="43" count="27" type="cond" truecount="0" falsecount="1"/>
+        <line num="35" count="32" type="stmt"/>
+        <line num="36" count="32" type="stmt"/>
+        <line num="40" count="32" type="stmt"/>
+        <line num="42" count="32" type="stmt"/>
+        <line num="43" count="32" type="cond" truecount="0" falsecount="1"/>
         <line num="44" count="0" type="stmt"/>
-        <line num="48" count="27" type="cond" truecount="1" falsecount="0"/>
+        <line num="48" count="32" type="cond" truecount="1" falsecount="0"/>
         <line num="49" count="1" type="stmt"/>
         <line num="50" count="1" type="stmt"/>
-        <line num="54" count="26" type="stmt"/>
+        <line num="54" count="31" type="stmt"/>
         <line num="61" count="0" type="stmt"/>
         <line num="62" count="0" type="stmt"/>
         <line num="72" count="10" type="stmt"/>
