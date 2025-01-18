@@ -207,12 +207,14 @@ export class PhaseManager {
     return transitionMap[`${fromPhase}-${toPhase}`] || null;
   }
 
-  public async updateContext<P extends DevelopmentPhase>(
+  public updateContext<P extends DevelopmentPhase>(
     phase: P,
     context: PhaseContextType[P extends keyof PhaseContextType ? P : never]
-  ): Promise<void> {
+  ): void {
     this.state.context[phase] = context;
-    await this.saveState();
+    this.saveState().catch(error => {
+      console.error('Failed to save state:', error);
+    });
   }
 
   public getContext<P extends DevelopmentPhase>(

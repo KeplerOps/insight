@@ -23,6 +23,18 @@ export class InsightServer {
       path.join(this.projectRoot, '.insight', 'state.json')
     );
 
+    // Initialize concept context if it doesn't exist
+    const conceptContext = this.phaseManager.getContext<DevelopmentPhase.Concept>(DevelopmentPhase.Concept);
+    if (!conceptContext) {
+      this.phaseManager.updateContext(DevelopmentPhase.Concept, {
+        problemStatement: '',
+        valueProposition: '',
+        successCriteria: [],
+        constraints: [],
+        decisions: []
+      });
+    }
+
     this.server = new Server(
       {
         name: 'insight',
@@ -276,12 +288,15 @@ export class InsightServer {
       content: [
         {
           type: 'text',
-          text: JSON.stringify({
-            prompt,
-            context,
-            currentPhase: this.phaseManager.getCurrentPhase(),
-          }, null, 2),
+          text: prompt
         },
+        {
+          type: 'json',
+          text: JSON.stringify({
+            context,
+            currentPhase: this.phaseManager.getCurrentPhase()
+          }, null, 2)
+        }
       ],
     };
   }
@@ -346,13 +361,16 @@ export class InsightServer {
       content: [
         {
           type: 'text',
+          text: prompt
+        },
+        {
+          type: 'json',
           text: JSON.stringify({
-            prompt,
             context,
             currentPhase: this.phaseManager.getCurrentPhase(),
-            outputPath: requirementsPath,
-          }, null, 2),
-        },
+            outputPath: requirementsPath
+          }, null, 2)
+        }
       ],
     };
   }
