@@ -252,7 +252,7 @@ In your designs, use modern practices and patterns. Explicitly state the use of 
     type: 'assessment',
     content: `As a world-class software architect, on a scale of 0 to 10, assess the readiness of this design to support design at the next level of abstraction, or if we are at the lowest level of abstraction (private methods), to support unit test design.`
   },
-  testDesign: {
+  unitTestDesign: {
     phase: DevelopmentPhase.UnitTestDesign,
     type: 'design',
     content: `As a world-class staff QA engineer, design the unit test unit suite to provide comprehensive coverage for the design and requirements. DO NOT IMPLEMENT. Provide the test files, test classes, fixtures, test method signatures, and full documentation. Cover all expected behaviour, exceptions and edge cases. Remember, the methods in the implementation classes are INTENTIONALLY stubbed. This is TDD. Write the test for the EXPECTED behaviour once they are implemented, not the stubbed behaviour.
@@ -261,10 +261,28 @@ Design a full set of shared mocks, utilities or fixtures first. Then design unit
 
 DO NOT IMPLEMENT unit tests. This is purely design. Implementing the tests will be another phase. Include a dir structure for the tests.`
   },
-  testAssessment: {
+  unitTestAssessment: {
     phase: DevelopmentPhase.UnitTestDesign,
     type: 'assessment',
     content: `As a world class principal software engineer, on a scale of 0 to 10 rate the design of these unit tests with respect to their consistency and coverage of the design and requirements, and their readiness to support unit test implementation.`
+  },
+  unitTestImplementationDesign: {
+    phase: DevelopmentPhase.UnitTestImplementation,
+    type: 'design',
+    content: `As a world-class QA engineer, implement the shared mocks, utilities or fixtures for the unit tests and the unit tests. Cover all the expected behaviour as documented in the test designs. If the designs are unclear, look at the concept, requirements, and implementation stubs. But remember, we are not testing that the stubs throw not implemented exceptions, we are setting up for TDD by testing the expected behaviour of the eventual implementations.
+
+Use the shared utilities and mocks. Extend or add to them as needed. Remember the real implementations will use cross-cutting concerns (e.g. logging, error handling, metrics, etc.) available in the repo if any.
+
+If you make any changes to shared utilities or mocks, check all the tests that use them to ensure they still work as expected.
+
+If there is a package manager ALWAYS use it to manage dependencies.
+
+Run the tests to ensure they fail. All stubs will throw not implemented exceptions, which is NOT the expected behaviour for the system.`
+  },
+  unitTestImplementationAssessment: {
+    phase: DevelopmentPhase.UnitTestImplementation,
+    type: 'assessment',
+    content: `As a world-class QA engineer, on a scale of 0 to 10 rate the coverage provided to the design and requirements by these unit tests and their readiness to validate system implementation.`
   },
   testImplementationDesign: {
     phase: DevelopmentPhase.UnitTestImplementation,
@@ -296,7 +314,7 @@ DO NOT IMPLEMENT unit tests. This is purely design. Implementing the tests will 
     content: `As a world-class QA engineer, on a scale of 0 to 10 rate the design of these integration tests with respect to their consistency and coverage of the design and requirements, and their readiness to support integration test implementation.`
   },
   integrationTestImplementation: {
-    phase: DevelopmentPhase.IntegrationTestDesign,
+    phase: DevelopmentPhase.Integration,
     type: 'implementation',
     content: `As a world-class QA engineer, implement the shared utilities and mocks for the integration tests and the integration tests. These integration tests are meant to cover one-hop interactions between components. Use your judgement for the appropriate level of coverage. We are are not testing end to end interactions. That will come later.
 

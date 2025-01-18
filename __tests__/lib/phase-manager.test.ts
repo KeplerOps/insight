@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { PhaseManager } from '../../src/lib/phase-manager.js';
 import { DevelopmentPhase, Assessment } from '../../src/lib/types.js';
 import fs from 'fs';
@@ -192,6 +193,27 @@ describe('PhaseManager', () => {
       expect(history.assessments).toHaveLength(1);
       expect(history.assessments[0].assessment).toEqual(assessment);
     });
+
+    test('handles gate scores for phase history', async () => {
+      // Add some gate scores
+      phaseManager['state'].gateScores = {
+        'conceptToRequirements': [{
+          score: 9,
+          explanation: 'Test assessment',
+          recommendations: []
+        }],
+        'requirementsToDesign': [{
+          score: 8,
+          explanation: 'Another assessment',
+          recommendations: []
+        }]
+      };
+
+      const history = phaseManager.getPhaseHistory(DevelopmentPhase.Concept);
+      expect(history.assessments).toHaveLength(1);
+      expect(history.assessments[0].gate).toBe('conceptToRequirements');
+      expect(history.assessments[0].assessment.score).toBe(9);
+    });
   });
 
   describe('Prompt Management', () => {
@@ -210,6 +232,212 @@ describe('PhaseManager', () => {
         'nonexistent'
       );
       expect(prompt).toBeNull();
+    });
+
+    test('retrieves unit test design prompts', () => {
+      const designPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.UnitTestDesign,
+        'design'
+      );
+      expect(designPrompt).toBeDefined();
+      expect(designPrompt).toContain('As a world-class staff QA engineer, design the unit test unit suite');
+
+      const assessmentPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.UnitTestDesign,
+        'assessment'
+      );
+      expect(assessmentPrompt).toBeDefined();
+      expect(assessmentPrompt).toContain('rate the design of these unit tests');
+    });
+
+    test('retrieves unit test implementation prompts', () => {
+      const designPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.UnitTestImplementation,
+        'design'
+      );
+      expect(designPrompt).toBeDefined();
+      expect(designPrompt).toContain('implement the shared mocks, utilities or fixtures');
+
+      const assessmentPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.UnitTestImplementation,
+        'assessment'
+      );
+      expect(assessmentPrompt).toBeDefined();
+      expect(assessmentPrompt).toContain('rate the coverage provided');
+    });
+
+    test('retrieves integration test prompts', () => {
+      const designPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.IntegrationTestDesign,
+        'design'
+      );
+      expect(designPrompt).toBeDefined();
+      expect(designPrompt).toContain('design the integration test suite');
+
+      const assessmentPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.IntegrationTestDesign,
+        'assessment'
+      );
+      expect(assessmentPrompt).toBeDefined();
+      expect(assessmentPrompt).toContain('rate the design of these integration tests');
+    });
+
+    test('retrieves implementation prompts', () => {
+      const implementationPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.Implementation,
+        'implementation'
+      );
+      expect(implementationPrompt).toBeDefined();
+      expect(implementationPrompt).toContain('make a plan to implement the system');
+    });
+
+    test('retrieves integration implementation prompts', () => {
+      const implementationPrompt = phaseManager.getPromptForPhase(
+        DevelopmentPhase.Integration,
+        'implementation'
+      );
+      expect(implementationPrompt).toBeDefined();
+      expect(implementationPrompt).toContain('implement the shared utilities and mocks for the integration tests');
+    });
+  });
+
+  describe('Error Handling', () => {
+    test('handles filesystem errors in loadState', () => {
+      // Mock fs.existsSync to throw
+      const mockExistsSync = jest.spyOn(fs, 'existsSync').mockImplementation(() => {
+        throw new Error('Test filesystem error');
+      });
+
+      // Mock console.error to verify it's called
+      const mockConsoleError = jest.spyOn(console, 'error');
+
+      // Create new instance to trigger loadState
+      const manager = new PhaseManager(statePath);
+      
+      // Verify console.error was called with the error
+      expect(mockConsoleError).toHaveBeenCalledWith(
+        'Failed to load state:',
+        expect.any(Error)
+      );
+
+      // Verify default state is returned
+      expect(manager.getCurrentPhase()).toBe(DevelopmentPhase.Concept);
+      expect(manager.getArtifact('test')).toBeNull();
+
+      mockExistsSync.mockRestore();
+      mockConsoleError.mockRestore();
+    });
+
+    test('handles filesystem errors in saveState', async () => {
+      // Mock fs.promises.mkdir to throw
+      const mockMkdir = jest.spyOn(fs.promises, 'mkdir').mockRejectedValue(new Error('Test error'));
+
+      await expect(phaseManager.addArtifact('test.md', 'content'))
+        .rejects
+        .toThrow('Failed to save state: Error: Test error');
+
+      mockMkdir.mockRestore();
+    });
+
+    test('handles unknown gates in evaluateGate', async () => {
+      await expect(phaseManager.evaluateGate('nonexistent-gate'))
+        .rejects
+        .toThrow('Unknown gate: nonexistent-gate');
+    });
+
+    test('handles unknown transitions in attemptPhaseTransition', async () => {
+      await expect(
+        phaseManager.attemptPhaseTransition(
+          DevelopmentPhase.Requirements,
+          DevelopmentPhase.Concept // Invalid backwards transition
+        )
+      ).rejects.toThrow('No gate defined for transition requirements -> concept');
+    });
+
+    test('handles invalid paths in getPhaseHistory', () => {
+      // Add some artifacts with invalid paths
+      phaseManager['state'].artifacts = {
+        'concept/valid.md': 'content',
+        'invalid/path.md': 'content'
+      };
+
+      const history = phaseManager.getPhaseHistory(DevelopmentPhase.Concept);
+      expect(history.artifacts).toContain('concept/valid.md');
+      expect(history.artifacts).not.toContain('invalid/path.md');
+    });
+
+    test('handles missing gate scores in evaluateGate', async () => {
+      const result = await phaseManager.evaluateGate('conceptToRequirements');
+      expect(result.scores).toHaveLength(0);
+      expect(result.passed).toBe(false);
+    });
+
+    test('handles missing criterion name in assessment', async () => {
+      await phaseManager.addAssessment('conceptToRequirements', {
+        score: 10,
+        explanation: 'test',
+        recommendations: []
+      });
+
+      const result = await phaseManager.evaluateGate('conceptToRequirements');
+      expect(result.scores).toHaveLength(1);
+      expect(result.passed).toBe(true);
+    });
+
+    test('handles assessments with no matching gates in getPhaseHistory', () => {
+      // Add gate scores for multiple phases
+      phaseManager['state'].gateScores = {
+        'conceptToRequirements': [{
+          score: 9,
+          explanation: 'Test assessment',
+          recommendations: []
+        }],
+        'requirementsToDesign': [{
+          score: 8,
+          explanation: 'Another assessment',
+          recommendations: []
+        }],
+        'designToImplementation': [{
+          score: 7,
+          explanation: 'Design assessment',
+          recommendations: []
+        }]
+      };
+
+      // Get history for Requirements phase - should only include gates starting with 'requirements'
+      const history = phaseManager.getPhaseHistory(DevelopmentPhase.Requirements);
+      expect(history.assessments).toHaveLength(1);
+      expect(history.assessments[0].gate).toBe('requirementsToDesign');
+      expect(history.assessments[0].assessment.score).toBe(8);
+    });
+
+    test('filters assessments by phase prefix in getPhaseHistory', () => {
+      // Add gate scores for multiple phases
+      phaseManager['state'].gateScores = {
+        'conceptToRequirements': [{
+          score: 9,
+          explanation: 'Test assessment',
+          recommendations: []
+        }],
+        'requirementsToDesign': [{
+          score: 8,
+          explanation: 'Another assessment',
+          recommendations: []
+        }]
+      };
+
+      // Get history for each phase and verify filtering
+      const conceptHistory = phaseManager.getPhaseHistory(DevelopmentPhase.Concept);
+      expect(conceptHistory.assessments).toHaveLength(1);
+      expect(conceptHistory.assessments[0].gate).toBe('conceptToRequirements');
+
+      const reqHistory = phaseManager.getPhaseHistory(DevelopmentPhase.Requirements);
+      expect(reqHistory.assessments).toHaveLength(1);
+      expect(reqHistory.assessments[0].gate).toBe('requirementsToDesign');
+
+      // Design phase has no gates defined yet
+      const designHistory = phaseManager.getPhaseHistory(DevelopmentPhase.Design);
+      expect(designHistory.assessments).toHaveLength(0);
     });
   });
 });
