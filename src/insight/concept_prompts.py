@@ -1,7 +1,7 @@
 from typing import Dict, List, Optional, TypedDict, Literal
 
-# The prompts we want to inject into Cline's conversation
-PROMPTS: Dict[str, str] = {
+# Phase 0: Concept Development Prompts
+CONCEPT_PROMPTS: Dict[str, str] = {
     # When user wants to discuss a concept, Cline uses this prompt
     "concept_refinement": """
 Your role is to be a collaborative thought partner helping the user explore and refine their software concept.
@@ -40,13 +40,15 @@ Begin with: "Could you tell me about the concept you'd like to explore?""",
 Keep the brief clear, concise, and focused on the core concept without jumping into implementation details.
 
 Write the brief to an appropriate location in the project. If the user wants to make changes, update the 
-brief file.""",
+brief file.
+
+Do not include any comments or meta-commentary, just the brief."""
 }
 
-class PromptContext(TypedDict, total=False):
+class ConceptPromptContext(TypedDict, total=False):
     existing_brief: Optional[str]  # If updating an existing brief
     conversation: Optional[List[str]]  # Relevant conversation history
 
-class GetPromptRequest(TypedDict):
+class GetConceptPromptRequest(TypedDict):
     prompt_name: Literal["concept_refinement", "concept_assessment", "product_brief"]
-    context: Optional[PromptContext]
+    context: Optional[ConceptPromptContext]

@@ -83,14 +83,21 @@ Please ensure each requirement is:
 - Achievable
 - Relevant
 9. Do NOT include timelines or deadlines.
+10. Do not include specific performance metrics, SLAs, or other metrics unless you are explicitly asked to include them.
+
+Requirements MUST be scoped to the concept and its scope (i.e. do not include enterprise requirements for a tiny poc).
+
+These are TECHNICAL requirements. Do not include any business requirements or non-technical requirements unless they are directly relevant to the technical requirements or you are explicitly asked to include them.
 
 Write the requirements to an appropriate location in the project. If the user wants to make changes, update the requirements file.
+
+Do not include any comments or meta-commentary, just the requirements.
 ```
 
 ### Requirements Intermediate Review
 
 ```plaintext
-In the context of the concept and its scope, review your requirements. Assess. If there are areas for improvement rewrite them and provide the COMPLETE rewritten requirements without skipping anything.
+In the context of the concept and its scope, review your requirements. Assess. If there are areas for improvement rewrite them and provide the COMPLETE rewritten requirements without skipping anything. AVOID SCOPE CREEP. Do not include any comments or meta-commentary, just the requirements.
 ```
 
 ### Requirements Assessment

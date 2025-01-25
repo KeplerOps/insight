@@ -9,6 +9,9 @@ packages = [{include = "insight", from = "src"}]
 [tool.poetry.dependencies]
 python = "^3.12"
 mcp = {extras = ["cli"], version = "^1.2.0"}
+langchain-community = "^0.3.15"
+langchain-openai = "^0.3.2"
+langchain-anthropic = "^0.3.4"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
