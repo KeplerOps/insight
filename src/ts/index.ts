@@ -46,7 +46,7 @@ class WorkflowServer {
                         properties: {
                             prompt_name: {
                                 type: 'string',
-                                enum: ['concept_refinement', 'product_brief'],
+                                enum: ['concept_refinement', 'concept_assessment', 'product_brief'],
                                 description: 'Name of the prompt to get',
                             },
                             context: {
@@ -83,7 +83,7 @@ class WorkflowServer {
                         );
                     }
                     return this.handleGetPrompt({
-                        prompt_name: args.prompt_name as 'concept_refinement' | 'product_brief',
+                        prompt_name: args.prompt_name as 'concept_refinement' | 'concept_assessment' | 'product_brief',
                         context: args.context as GetPromptRequest['context']
                     });
                 }

@@ -82,7 +82,9 @@ Please ensure each requirement is:
 - Measurable
 - Achievable
 - Relevant
-- Time-bound (if applicable)
+9. Do NOT include timelines or deadlines.
+
+Write the requirements to an appropriate location in the project. If the user wants to make changes, update the requirements file.
 ```
 
 ### Requirements Intermediate Review
