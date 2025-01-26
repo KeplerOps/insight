@@ -1,8 +1,0 @@
-Help me refine my app concept
-
-I want a calculator app with a Windows NT vibe
-
-Just for me, locally hosted web app, just basic arithmetic, i like the janky painful Window NT vibe, the memory buttons don't need to work, no text input just button clicks
-
-Write a product brief
-
