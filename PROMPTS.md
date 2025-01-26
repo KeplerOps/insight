@@ -38,7 +38,8 @@ Ensure all requirements maintain full hierarchical numbering (e.g., 3.1.2.3) and
 [Brief overview of the system/library]
 
 ## 2. Terms and Definitions
-[Define all key terms, each with numbered subsections like 2.1, 2.1.1, etc.]
+2.1 [Term]
+2.2 [Term]
 
 ## 3. Functional Requirements
 [Break down into subsections like:]
@@ -82,13 +83,22 @@ Please ensure each requirement is:
 - Measurable
 - Achievable
 - Relevant
-- Time-bound (if applicable)
+9. Do NOT include timelines or deadlines.
+10. Do not include specific performance metrics, SLAs, or other metrics unless you are explicitly asked to include them.
+
+Requirements MUST be scoped to the concept and its scope (i.e. do not include enterprise requirements for a tiny poc).
+
+These are TECHNICAL requirements. Do not include any business requirements or non-technical requirements unless they are directly relevant to the technical requirements or you are explicitly asked to include them.
+
+Write the requirements to an appropriate location in the project. If the user wants to make changes, update the requirements file.
+
+Do not include any comments or meta-commentary, just the requirements.
 ```
 
 ### Requirements Intermediate Review
 
 ```plaintext
-In the context of the concept and its scope, review your requirements. Assess. If there are areas for improvement rewrite them and provide the COMPLETE rewritten requirements without skipping anything.
+In the context of the concept and its scope, review the requirements for coverage of the concept, coherence, consistency and orthogonality. Assess. If there are areas for improvement rewrite them and provide the COMPLETE rewritten requirements without skipping anything. AVOID SCOPE CREEP. Do not include any comments or meta-commentary, just the requirements.
 ```
 
 ### Requirements Assessment
@@ -99,139 +109,497 @@ As a world-class software architect, on a scale of 0 to 10, how ready are these 
 
 ## Design Phase
 
-### Design Creation
+### Design Level Identification
 
 ```plaintext
-As a world class software architect, identity the next highest level of abstraction that needs for design for this project. This will be our current level of abstraction. Design the components at this single layer of abstraction, provide descriptions for them, their interactions and responsibilities. No matter what level of abstraction we start at, DO NOT IMPLEMENT ANY CODE. We will recurse through the levels of abstraction designing at each step until we get to the point of every public method or interface being designed and having docstrings but NO implementations. Then we will move on to TDD.
+As a world-class software architect, analyze the requirements and identify ALL the levels of abstraction needed for this system's design, from highest (system architecture) to lowest (method signatures). For each level, specify:
 
-If the current level of abstraction is above the a level normally associated with repository files, create the design as a single document. If the current level of abstraction is at a level normally associated with repository files (for example, apps, packages, modules and their interfaces, submodules and their interfaces, private methods) then provide a repositiory structure and the relevant files with descriptions and signatures if relevant BUT NO IMPLEMENTATIONS. All methods MUST throw a not implemented exception appropriate to the language and framework so that all tests will fail during later phases.
+1. The level name and scope
+2. The appropriate design artifacts for this level (e.g., system diagrams, DFDs, sequence diagrams, class diagrams, interface definitions, etc.)
+3. The key design decisions that need to be made at this level
+4. The cross-cutting concerns relevant to this level
 
-In your designs, use modern practices and patterns. Explicitly state the use of cross-cutting concerns (e.g. logging, error handling, metrics, etc.) available in the repo if any. Explicitly state the use of any other patterns or practices. Explicitly state code design patterns or important data structures if relevant. Do not reinvent the wheel. Assume you will use existing libraries and frameworks or cross-cutting concerns in the repo if any instead of reinventing them. The most beautiful code is the code that is the simplest and most elegant and requires the least amount of code to implement to meet the requirements. Security, logging, error handling, and monitoring are important to consider from the beginning, as appropriate to the project level. The user's brand hinges on trust built on warmth and competence; quality is the currency of trust. Do not over-engineer.
+Create a design plan document organizing these levels and noting any critical interfaces or interactions that need special attention during design.
+
+Do not proceed with any actual design yet. We will tackle each level systematically.
 ```
 
-### Design Assessment
+### Level Design
 
 ```plaintext
-As a world-class software architect, on a scale of 0 to 10, assess the readiness of this design to support design at the next level of abstraction, or if we are at the lowest level of abstraction (private methods), to support unit test design.
+As a world-class software architect, first review the design plan document to ensure continuity with previous design decisions and patterns.
+
+You are designing level [LEVEL] of [TOTAL_LEVELS]. The lowest level will be fully documented method signatures (no implementations).
+
+Current level context from design plan:
+- Level scope: [SCOPE]
+- Required artifacts: [ARTIFACTS]
+- Key decisions needed: [DECISIONS]
+- Relevant cross-cutting concerns: [CONCERNS]
+- Critical interfaces/interactions: [INTERFACES]
+
+If this level involves file-level designs (modules, classes, etc.), each element MUST include:
+- Complete interface documentation
+- All method signatures with full docstrings
+- Explicit specification of:
+  - Valid input types, ranges, and formats
+  - All possible return types and their conditions
+  - All error conditions and their triggers
+  - State requirements (if any)
+  - Performance constraints (if any)
+  - Thread safety guarantees (if any)
+  
+Method signature template:
+
+def process_user_data(
+    user_data: Dict[str, Any],
+    validation_level: ValidationLevel = ValidationLevel.STANDARD
+) -> ProcessedUserData:
+    """Process and validate user data according to specified rules.
+    
+    Args:
+        user_data: Dictionary containing user fields
+            Required fields:
+            - 'email': str, valid email format
+            - 'age': int, range 13-150
+            Optional fields:
+            - 'name': str, 1-100 chars, alphanumeric + spaces
+            - 'preferences': Dict[str, str], max 50 items
+            
+        validation_level: Level of validation to apply
+            STANDARD: Basic format checks
+            STRICT: Additional business rule validation
+            
+    Returns:
+        ProcessedUserData with normalized and validated fields
+        
+    Raises:
+        ValidationError: 
+            - If required fields are missing
+            - If field formats are invalid
+            - If age is out of range
+            - If email is invalid format
+        ProcessingError:
+            - If normalization fails
+            - If business rules fail in STRICT mode
+        RateLimitError:
+            - If processing quota exceeded
+    
+    Thread Safety:
+        This method is thread-safe and can be called concurrently
+        
+    Performance:
+        Expected to complete within 100ms for standard validation
+        May take up to 500ms for strict validation
+    """
+    raise NotImplementedError(
+        "process_user_data: Validates and normalizes user data dictionary"
+    )
+
+Now, focus ONLY on designing the current level of abstraction:
+
+1. Create all appropriate design artifacts for this level as identified in the design plan
+2. Define all components/elements at this level and their responsibilities
+3. Define all interfaces and interactions between components at this level
+4. Document any assumptions or constraints
+5. Identify any cross-cutting concerns specific to this level
+6. Note any critical decisions that will impact lower levels
+
+DO NOT:
+- Implement any code
+- Design components at lower levels of abstraction
+- Make implementation decisions that belong at lower levels
+
+Use the design plan document as a scratchpad to:
+- Track design decisions and their rationale
+- Note potential impacts on other levels
+- Identify risks or areas needing special attention
+- Document any interface or interaction patterns that must be consistent across levels
+
+Remember:
+- Stay strictly at the current level of abstraction
+- Focus on responsibilities and interactions
+- Consider the system's scope (from small script to large platform)
+- Don't reinvent wheels - note where existing frameworks/libraries will be used
+- Security, logging, error handling, and monitoring considerations belong at every level
+
+Before proceeding, update the design plan document with any new insights or patterns discovered during this level's design.
 ```
 
-## Unit Test Phase
-
-### Test Design
+### Level Design Assessment
 
 ```plaintext
-As a world-class staff QA engineer, design the unit test unit suite to provide comprehensive coverage for the design and requirements. DO NOT IMPLEMENT. Provide the test files, test classes, fixtures, test method signatures, and full documentation. Cover all expected behaviour, exceptions and edge cases. Remember, the methods in the implementation classes are INTENTIONALLY stubbed. This is TDD. Write the test for the EXPECTED behaviour once they are implemented, not the stubbed behaviour.
+As a world-class software architect, assess this level's design:
 
-Design a full set of shared mocks, utilities or fixtures first. Then design unit tests for cross-cutting concerns. When designing unit tests for other code assume cross-cutting utilities, if any, will be used. Remember these are pure unit tests, not integration tests.
+1. Completeness (0-10):
+   - Are all components at this level fully defined?
+   - Are all interfaces and interactions specified?
+   - Are all responsibilities clear?
 
+2. Consistency (0-10):
+   - Do the design artifacts align with each other?
+   - Are naming and patterns consistent?
+   - Are cross-cutting concerns handled consistently?
 
-DO NOT IMPLEMENT unit tests. This is purely design. Implementing the tests will be another phase. Include a dir structure for the tests.
+3. Clarity (0-10):
+   - Are responsibilities and boundaries clear?
+   - Are interfaces well-defined?
+   - Is the documentation sufficient?
+
+4. Integration (0-10):
+   - How well does this level integrate with levels above?
+   - Are interfaces appropriate for levels below?
+   - Are cross-cutting concerns properly addressed?
+
+Provide specific recommendations for any score below 8.
+
+Is this level ready to support design of the next level? (Yes/No)
+If no, what must be addressed first?
+
+STOP after designing this level and wait for the user to provide feedback.
 ```
 
-### Unit Test Assessment
+### Interface Review
 
 ```plaintext
-As a world class principal software engineer, on a scale of 0 to 10 rate the design of these unit tests with respect to their consistency and coverage of the design and requirements, and their readiness to support unit test implementation.
-```
+As a world-class software architect, review ALL interfaces defined so far across ALL levels designed to date:
 
-## Unit Test Implementation Phase
+1. Assess interface consistency and patterns
+2. Identify any gaps or inconsistencies in cross-cutting concerns
+3. Verify that interfaces properly support their intended interactions
+4. Check for appropriate abstraction and encapsulation
+5. Verify that security, logging, error handling, and monitoring are properly considered
 
-### Unit Test Implementation Design
-
-```plaintext
-As a world-class QA engineer, implement the shared mocks, utilities or fixtures for the unit tests and the unit tests. Cover all the expected behaviour as documented in the test designs. If the designs are unclear, look at the concept, requirements, and implementation stubs. But remember, we are not testing that the stubs throw not implemented exceptions, we are setting up for TDD by testing the expected behaviour of the eventual implementations.
-
-Use the shared utilities and mocks. Extend or add to them as needed. Remember the real implementations will use cross-cutting concerns (e.g. logging, error handling, metrics, etc.) available in the repo if any.
-
-If you make any changes to shared utilities or mocks, check all the tests that use them to ensure they still work as expected.
-
-If there is a package manager ALWAYS use it to manage dependencies.
-
-Run the tests to ensure they fail. All stubs will throw not implemented exceptions, which is NOT the expected behaviour for the system.
-```
-
-### Unit Test Implementation Assessment
-
-```plaintext
-As a world-class QA engineer, on a scale of 0 to 10 rate the coverage provided to the design and requirements by these unit tests and their readiness to validate system implementation.
-```
-
-## Integration Test Phase
-
-### Integration Test Design
-
-```plaintext
-As a world-class QA engineer, design the integration test suite to provide comprehensive coverage for the design and requirements. DO NOT IMPLEMENT. Provide the test files, test classes, fixtures, test method signatures, and full documentation. Cover all expected behaviour, exceptions and edge cases. Remember, the methods in the implementation classes are INTENTIONALLY stubbed. This is TDD. Write the test for the EXPECTED behaviour once they are implemented, not the stubbed behaviour.
-
-Add to or extend shared utilities and mocks as required. If you make any breaking changes, search for all the unit and integration tests that use them to ensure they still work as expected.
-
-Then design unit tests for cross-cutting concerns. When designing unit tests for other code assume cross-cutting utilities, if any, will be used. Remember these are pure unit tests, not integration tests.
-
-DO NOT IMPLEMENT unit tests. This is purely design. Implementing the tests will be another phase. Include a dir structure for the tests.
-```
-
-### Integration Test Design Assessment
-
-```plaintext
-As a world-class QA engineer, on a scale of 0 to 10 rate the design of these integration tests with respect to their consistency and coverage of the design and requirements, and their readiness to support integration test implementation.
-```
-
-### Integration Test Implementation
-
-```plaintext
-As a world-class QA engineer, implement the shared utilities and mocks for the integration tests and the integration tests. These integration tests are meant to cover one-hop interactions between components. Use your judgement for the appropriate level of coverage. We are are not testing end to end interactions. That will come later.
-
-Cover all the expected behaviour as documented in the test designs. If the designs are unclear, look at the concept, requirements, and implementation stubs. But remember, we are not testing that the stubs throw not implemented exceptions, we are setting up for TDD by testing the expected behaviour of the eventual implementations.
-
-Use the shared utilities and mocks. Extend or add to them as needed. Remember the real implementations will use cross-cutting concerns (e.g. logging, error handling, metrics, etc.) available in the repo if any.
-
-If you make any changes to shared utilities or mocks, check all the tests that use them to ensure they still work as expected.
-
-If there is a package manager ALWAYS use it to manage dependencies.
-
-Run the tests to ensure they fail. All stubs will throw not implemented exceptions, which is NOT the expected behaviour for the system.
+Document any issues or patterns that should be addressed before proceeding to the next level.
 ```
 
 ## Implementation Phase
 
-### Implementation
+### Mock Library Creation
 
 ```plaintext
-As a world-class staff software engineer, make a plan to implement the system and document it in a plan document you can refer to and track your progress against. Prefer implementing cross-cutting concerns first. Your goal is to implement the system in the most elegant way possible, using the most modern practices and patterns, adhering to the design and requirements, and passing all the tests. As you implement, if there are issues, you learn something that may be relevant later, you encounter a problem that may be relevant to other parts of the system, or you learn something that may be relevant to other parts of the system, you document it in the plan document.
+Review the complete system design. For each class/module interface:
 
-Commit often so you can track your progress and have a history of your changes and backtrack if you need to.
+1. Verify interface documentation completeness:
+   - All method signatures have clear input/output specifications
+   - All error conditions are documented
+   - All dependencies are identified
+   If any documentation is incomplete, DO NOT PROCEED until design is updated.
 
-Create a debugging document. 
+2. Create mock class/module:
+   - Match interface exactly
+   - Implement basic happy path behavior
+   - Return documented error conditions
+   - Add configuration options only for essential test scenarios
+   - Include validation capabilities for test verification
 
-Each time you complete a testable unit of work, run the tests, and document any failures. Check the debugging document for previous failures for the code you are concerned about. Check the relevant code and tests, do a root cause analysis, and document your findings and plan. Use the debugging document to detect if you are repeating the same mistakes or going in circles. It is always better to fix the root cause of the problem than to just make the tests pass. ALWAYS consider the design and requirements when designing fixes. If you are CERTAIN the issue is in the code, search for and plan for the impacts on other code and tests of changes you make.
+DO NOT:
+- Add behaviors not specified in the interface
+- Create complex mock chains
+- Mock standard library features
+- Modify the original interface design
 
-If you think larger refactoring is needed, document it in the plan document and discuss with the user.
-
-If there is a package manager ALWAYS use it to manage dependencies.
-
-Update your progress in the plan document as you go.
+Document created mocks in test_helpers/mocks.py (or equivalent).
 ```
 
-## Integration Phase
-
-### Integration Design
+### Mock Consistency Check
 
 ```plaintext
-As a world-class QA engineer, design the integration test suite to provide comprehensive coverage for the design and requirements. DO NOT IMPLEMENT. The goal here is end to end testing that validates the system works as expected, meets the concept, requirements, and design, and that we have not accidentally failed to use cross-cutting concerns or parts of the system. Designing and implementing cross-cutting concerns or parts of the system and failing to use them in the actual implementation is a common failure mode to check for.
+After completing each class/module:
 
-This is a test of the system as a whole, not just the individual components. Individual components have their own unit and one-hop integration tests. We are not testing if systems external to the system work as expected (e.g. we will assume AWS works as expected, that kind of thing).
+1. Compare mock implementations with real implementations:
+   - Verify interface consistency
+   - Verify error condition handling matches
+   - Verify mock behavior assumptions were correct
+
+2. If inconsistencies found:
+   - Document the differences
+   - DO NOT modify the real implementation
+   - DO NOT modify the interface
+   - Seek design review
+
+This check ensures test validity and catches design issues early.
 ```
 
-### Integration Assessment
+### Paired Implementation
 
 ```plaintext
-As a world-class QA engineer, on a scale of 0 to 10 rate the design of these integration tests with respect to their consistency and coverage of the design and requirements, and their readiness to support integration test implementation.
+For each method in the system, execute this sequence:
+
+1. Write the test:
+   - Use existing mocks from mock library
+   - Test the primary happy path
+   - Test documented error conditions
+   - Test obvious edge cases
+   - Verify the test FAILS with NotImplementedError
+
+2. Implement the method:
+   - Follow the design documentation EXACTLY
+   - Implement ONLY the current method
+   - DO NOT modify other methods or classes
+   - Meet the interface specification
+   - Handle documented error cases
+   - Use existing dependencies/mocks AS IS
+
+3. Verify:
+   - Test passes
+   - Implementation matches design
+   - No mock modifications were needed
+   - No interface changes were needed
+   - No other components were modified
+   - Test coverage is at least 80%
+
+4. Debug History:
+   BEFORE attempting ANY fix:
+   - Check Debug History for similar problems in this component
+   - Record new problems and their context
+   - If you've seen similar problems:
+     - DO NOT retry failed solutions
+     - DO NOT try minor variations of failed fixes
+     - Seek guidance
+
+   AFTER each fix attempt:
+   - Document exact changes and results
+   - Note which files/components were affected
+   - Update problem patterns
+
+If verification fails due to:
+
+A. Implementation Issues (current method only):
+   - If the issue is confined to ONLY the current method:
+     - Check Debug History for similar failures
+     - Revise implementation
+     - Document changes in Debug History
+     - Re-verify ALL checks
+   - If you've tried 3 times or seen similar failures:
+     - Document exact failure pattern
+     - Include all related Debug History
+     - Seek guidance
+
+B. Design Issues (affects other components):
+   - STOP implementation immediately
+   - DO NOT modify other components
+   - DO NOT modify interfaces
+   - Document:
+     1. The specific design issue discovered
+     2. Which components/interfaces are affected
+     3. Why the current design cannot satisfy requirements
+     4. Related problems from Debug History
+   - Seek guidance
+
+C. Test Issues:
+   - If the test is wrong (not the implementation):
+     - Check Debug History for similar test issues
+     - Fix ONLY the current method's test
+     - DO NOT modify other tests
+     - Document fix in Debug History
+     - Re-verify from step 1
+   - If fixing the test would require changing other tests:
+     - STOP
+     - Document the test interdependency
+     - Include relevant Debug History
+     - Seek guidance
+
+ALWAYS seek guidance when:
+- Changes would affect multiple components
+- Interface changes are needed
+- Test changes affect other tests
+- Implementation fails verification 3 times
+- Mock behavior needs modification
+- Same problem/failure occurs 3 times
+- Similar fixes have failed twice
+- Fix breaks previously working code
+- Multiple workarounds accumulating
+- Component assumptions prove incorrect
+
+Proceed to next method only when current method is complete and verified.
 ```
 
-### Integration Implementation and Fixes
+### Implementation Assessment
 
 ```plaintext
-As a world-class QA engineer, implement the end to end integration tests one at a time. Each time you implement an end to end test, run the tests, and document any failures. Check the debugging document for previous failures for the code you are concerned about. Check the relevant code and tests, do a root cause analysis, and document your findings and plan. Use the debugging document to detect if you are repeating the same mistakes or going in circles. It is always better to fix the root cause of the problem than to just make the tests pass. ALWAYS consider the design and requirements when designing fixes.
+As a world-class principal software engineer, assess the implementation on a scale of 0 to 10:
 
-Discuss ALL fixes with the user BEFORE making them. At this point changes can have significant impact on the system. Provide a detailed analysis of the problem, the fix, and the impact of the fix on the system.
+1. Code Quality (0-10):
+   - Clean, readable, and maintainable code
+   - Follows language idioms and best practices
+   - Proper error handling and logging
+   - Efficient resource usage
+   - Clear naming and organization
+
+2. Design Adherence (0-10):
+   - Implements design specifications accurately
+   - Maintains intended abstractions
+   - Respects component boundaries
+   - Follows documented interfaces
+   - Handles all specified error conditions
+
+3. Robustness (0-10):
+   - Proper input validation
+   - Comprehensive error handling
+   - Thread safety (if applicable)
+   - Resource cleanup
+   - No edge case oversights
+
+4. Implementation Completeness (0-10):
+   - All required functionality implemented
+   - No TODOs or placeholder code
+   - All error conditions handled
+   - Required logging/monitoring in place
+   - Documentation complete and accurate
+
+Recommend seeking guidance from the user if any score is below 5.
+Provide specific recommendations for any score below 10, but avoid scope creep.
+
+Fail:
+- If any score is below 5.
+- Any unit tests are failing (you need to run them to check).
+- Unit test coverage is below 80%.
+
+STOP after the assessment and wait for the user to provide feedback.
+```
+
+## Integration Testing
+
+### Integration Testing
+
+```plaintext
+For each major subsystem or workflow in the system:
+
+1. Write the Integration Test:
+   - Start with test skeleton and mocks
+   - Document the workflow being tested
+   - Map all components in the chain
+   - List all external dependencies
+   - Verify test FAILS initially
+
+2. Test Structure:
+   - Clear workflow documentation
+   - Explicit setup of test data
+   - Well-defined entry and exit points
+   - Clear success/failure criteria
+   - Proper cleanup of resources
+
+3. Mock Strategy:
+   - Mock ALL external dependencies
+   - Use existing mocks from mock library
+   - Create minimal new mocks only when needed
+   - Mock at system boundary only
+   - Document mock behavior assumptions
+
+4. Test Implementation:
+   - Test complete internal workflows
+   - Verify data flows through components
+   - Test error propagation
+   - Verify system-level error handling
+   - Test configuration variations
+
+5. Debug History:
+   BEFORE any fix attempt:
+   - Check Debug History for similar issues
+   - Document new test failures
+   - If pattern exists:
+     - DO NOT retry failed approaches
+     - DO NOT try minor variations
+     - Seek guidance
+
+   AFTER each fix:
+   - Document exact changes
+   - Note affected components
+   - Update failure patterns
+
+6. Boundaries and Limitations:
+   DO NOT:
+   - Test external system integration
+   - Test third-party API behavior
+   - Test infrastructure
+   - Test deployment scenarios
+   - Modify production code
+   - Change component interfaces
+
+If verification fails due to:
+
+A. Test Implementation Issues:
+   - If confined to current test:
+     - Check Debug History
+     - Revise test implementation
+     - Document changes
+     - Re-verify
+   - After 3 failures:
+     - Document pattern
+     - Include Debug History
+     - Seek guidance
+
+B. Component Integration Issues:
+   - STOP testing
+   - DO NOT modify components
+   - Document:
+     1. Integration issue found
+     2. Components involved
+     3. Expected vs actual behavior
+     4. Related Debug History
+   - Seek guidance
+
+C. Mock Issues:
+   - If mock behavior is wrong:
+     - Fix ONLY current test's mocks
+     - DO NOT modify other tests
+     - Document changes
+     - Re-verify
+   - If fix affects other tests:
+     - STOP
+     - Document dependencies
+     - Seek guidance
+
+ALWAYS seek guidance when:
+- Component changes needed
+- Interface changes needed
+- Mock changes affect multiple tests
+- Same failure occurs 3 times
+- Similar fixes fail twice
+- Fix breaks other tests
+- Integration assumptions incorrect
+
+### Integration Test Assessment
+
+```plaintext
+Verify integration test completeness:
+
+1. Workflow Coverage:
+   - All major workflows tested
+   - Component chains verified
+   - Error paths tested
+   - Configuration variations covered
+   - No critical paths untested
+
+2. Test Quality:
+   - Clear workflow documentation
+   - Proper mock usage
+   - Meaningful assertions
+   - Proper resource cleanup
+   - Independent tests
+
+3. Coverage Requirements:
+   - ALL tests MUST pass
+   - No flaky tests
+   - No external dependencies
+   - Clean test output
+   - Minimum 80% integration coverage
+
+4. Test Independence:
+   - No test order dependencies
+   - No shared state
+   - Proper setup/teardown
+   - Isolated test data
+   - Independent mock configurations
+
+Implementation MUST NOT proceed to next phase until:
+- All integration tests pass
+- 80% workflow coverage achieved
+- No unjustified gaps
+- No critical workflows untested
+- All debug history documented
+
+Provide specific recommendations for any gaps.
+STOP after assessment and wait for user feedback.
 ```

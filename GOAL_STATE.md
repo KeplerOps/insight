@@ -36,6 +36,8 @@
 
 #### 0.2.1 Gate: A World Class Senior Technical Product Manager would say "This is a great concept"
 
+0.2.1.0 On a scale of 0 to 10, is there enough concept information to write a first comprehensive draft of functional and non-functional requirements? The goal isn't to already have requirements from the user. It's to understand the user's goal enough that we can write a comprehensive first draft of requirements, even if that means we have to make some assumptions and use good judgement as a product manager.
+
 0.2.1.1 On a scale of 0 to 10, how clear is the concept? Explain your rating.
 0.2.1.2 On a scale of 0 to 10, how well do you understand what the user is trying to achieve? Explain your rating.
 0.2.1.3 On a scale of 0 to 10, how well does the concept meet the user's goals? Explain your rating.
@@ -465,8 +467,6 @@
 2.2.2.28 Apply EC1
 2.2.2.29 Apply EC2
 2.2.2.30 Apply EC3
-2.2.2.31 Apply EC4
-2.2.2.32 Apply EC5
 
 2.2.2.33 If average rating is less than the gate threshold:
 2.2.2.33.1 If this is the third failure, stop.
