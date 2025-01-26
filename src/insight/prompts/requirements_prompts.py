@@ -19,10 +19,11 @@ Ensure all requirements maintain full hierarchical numbering (e.g., 3.1.2.3) and
 ## Document Structure:
 
 ## 1. Introduction
-[Brief overview of the system/library]
+1.1 [Brief overview of the system/library]
 
 ## 2. Terms and Definitions
-[Define all key terms, each with numbered subsections like 2.1, 2.1.1, etc.]
+2.1 [term: definition]
+2.2 [term: definition]
 
 ## 3. Functional Requirements
 [Break down into subsections like:]
@@ -81,7 +82,7 @@ Do not include any comments or meta-commentary, just the requirements.""",
     "requirements_intermediate_review": """In the context of the concept and its scope, review the requirements for coverage of the concept, coherence, consistency and orthogonality. Assess. If there are areas for improvement rewrite them and provide the COMPLETE rewritten requirements without skipping anything. AVOID SCOPE CREEP. Do not include any comments or meta-commentary, just the requirements.""",
 
     # When assessing if requirements are ready for design
-    "requirements_assessment": """As a world-class software architect, on a scale of 0 to 10, how ready are these requirements to support implementation? Pay particular attention to completeness given the concept, consistency, orthogonality, and elegance.""",
+    "requirements_assessment": """As a world-class software architect, on a scale of 0 to 10, how ready are these requirements to support implementation? Pay particular attention to completeness given the concept, consistency, orthogonality, and elegance. Everything in the requirements must be numbered.""",
 }
 
 class RequirementsPromptContext(TypedDict, total=False):
