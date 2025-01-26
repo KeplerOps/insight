@@ -1,10 +1,10 @@
 ---
 description: Design, development, testing and other guidance for the insight repo
-globs: 
+globs:
 ---
 # Instructions
 
-During yon with the user, if you find anything reusable in this project (e.g. version of a library, model name), especially about a fix to a mistake you made or a correction you received, you should take note in the `Lessons` section in the `.cursorrules` file so you will not make the same mistake again.
+During your work with the user, if you find anything reusable in this project (e.g. version of a library, model name), especially about a fix to a mistake you made or a correction you received, you should take note in the `Lessons` section in the `.cursorrules` file so you will not make the same mistake again.
 
 You should always use a package manager to manage dependencies. Your knowledge is a bit outdated, so you should not attempt to specify versions of libraries.
 

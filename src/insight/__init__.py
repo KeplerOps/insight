@@ -1,3 +1,1 @@
-"""
-Insight MCP server.
-"""
+"""Insight MCP workflow server package."""

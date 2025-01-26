@@ -1,4 +1,10 @@
-from typing import Dict, List, Optional, TypedDict, Literal
+"""Implementation phase prompt templates.
+
+This module contains prompt templates used in the implementation phase
+for code generation, review, and implementation guidance.
+"""
+
+from typing import Dict, Literal, TypedDict
 
 # Phase 3: Implementation Development Prompts
 IMPLEMENTATION_PROMPTS: Dict[str, str] = {
@@ -25,7 +31,6 @@ DO NOT:
 - Modify the original interface design
 
 Document created mocks in test_helpers/mocks.py (or equivalent).""",
-
     # When checking mock consistency
     "mock_consistency_check": """After completing each class/module:
 
@@ -41,7 +46,6 @@ Document created mocks in test_helpers/mocks.py (or equivalent).""",
    - Seek design review
 
 This check ensures test validity and catches design issues early.""",
-
     # When implementing paired tests and code
     "paired_implementation": """For each method in the system, execute this sequence:
 
@@ -130,8 +134,19 @@ ALWAYS seek guidance when:
 - Multiple workarounds accumulating
 - Component assumptions prove incorrect
 
-Proceed to next method only when current method is complete and verified."""
+Proceed to next method only when current method is complete and verified.""",
 }
 
+
 class GetImplementationPromptRequest(TypedDict):
-    prompt_name: Literal["mock_library_creation", "mock_consistency_check", "paired_implementation"]
+    """Request structure for getting an implementation prompt."""
+
+    prompt_name: Literal[
+        "mock_library_creation", "mock_consistency_check", "paired_implementation"
+    ]
+
+
+class ImplementationPromptTemplate:
+    """Template for generating implementation-related prompts with context."""
+
+    pass
