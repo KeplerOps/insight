@@ -1,4 +1,10 @@
-from typing import Dict, List, Optional, TypedDict, Literal
+"""Integration test phase prompt templates.
+
+This module contains prompt templates used in the integration test phase
+for test case generation, execution, and result analysis.
+"""
+
+from typing import Dict, Literal, TypedDict
 
 # Phase 5: Integration Test Development Prompts
 INTEGRATION_TEST_PROMPTS: Dict[str, str] = {
@@ -111,5 +117,14 @@ You are not done until:
 - All mocks properly documented"""
 }
 
+
 class GetIntegrationTestPromptRequest(TypedDict):
+    """Request structure for getting an integration test prompt."""
+
     prompt_name: Literal["integration_testing"]
+
+
+class IntegrationTestPromptTemplate:
+    """Template for generating integration test-related prompts with context."""
+
+    pass

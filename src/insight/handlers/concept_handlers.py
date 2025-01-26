@@ -1,12 +1,20 @@
-import mcp.types as types
+"""Concept phase handlers for the MCP workflow server.
+
+This module provides tools and handlers for the concept development phase,
+including concept generation, refinement, and assessment.
+"""
+
 import json
-from typing import Optional, List
-from mcp.types import Tool, TextContent
+from typing import List, Optional
+
 from langchain.base_language import BaseLanguageModel
+from mcp.types import TextContent, Tool
+
 from ..prompts.concept_prompts import CONCEPT_PROMPTS
 
+
 def get_concept_tools() -> List[Tool]:
-    """Return the list of concept phase tools"""
+    """Return the list of concept phase tools."""
     return [
         Tool(
             name="get_concept_prompt",
@@ -16,33 +24,38 @@ def get_concept_tools() -> List[Tool]:
                 "properties": {
                     "prompt_name": {
                         "type": "string",
-                        "enum": ["concept_refinement", "concept_assessment", "product_brief"],
-                        "description": "Name of the prompt to get"
+                        "enum": [
+                            "concept_refinement",
+                            "concept_assessment",
+                            "product_brief",
+                        ],
+                        "description": "Name of the prompt to get",
                     },
                     "context": {
                         "type": "object",
                         "properties": {
                             "existing_brief": {
                                 "type": "string",
-                                "description": "Existing brief content when updating"
+                                "description": "Existing brief content when updating",
                             },
                             "conversation": {
                                 "type": "array",
-                                "items": {
-                                    "type": "string"
-                                },
-                                "description": "Relevant conversation history"
-                            }
-                        }
-                    }
+                                "items": {"type": "string"},
+                                "description": "Relevant conversation history",
+                            },
+                        },
+                    },
                 },
-                "required": ["prompt_name"]
-            }
+                "required": ["prompt_name"],
+            },
         )
     ]
 
-async def handle_concept_tool(name: str, arguments: dict, llm: BaseLanguageModel) -> Optional[List[TextContent]]:
-    """Handle concept phase tool calls"""
+
+async def handle_concept_tool(
+    name: str, arguments: dict, llm: BaseLanguageModel
+) -> Optional[List[TextContent]]:
+    """Handle concept phase tool calls."""
     if name != "get_concept_prompt":
         return None
 
@@ -57,13 +70,12 @@ async def handle_concept_tool(name: str, arguments: dict, llm: BaseLanguageModel
 
     # For product brief, include context in response
     if prompt_name == "product_brief" and "context" in arguments:
-        return [TextContent(
-            type="text",
-            text=f"{prompt}\n\nContext:\n{json.dumps(arguments['context'], indent=2)}"
-        )]
+        return [
+            TextContent(
+                type="text",
+                text=f"{prompt}\n\nContext:\n{json.dumps(arguments['context'], indent=2)}",
+            )
+        ]
 
     # For other prompts, just return the prompt
-    return [TextContent(
-        type="text",
-        text=prompt
-    )]
+    return [TextContent(type="text", text=prompt)]

@@ -1,11 +1,19 @@
-import mcp.types as types
-from typing import Optional, List
-from mcp.types import Tool, TextContent
+"""Implementation phase handlers for the MCP workflow server.
+
+This module provides tools and handlers for the implementation phase,
+including code generation, code review, and implementation guidance.
+"""
+
+from typing import List, Optional
+
 from langchain.base_language import BaseLanguageModel
+from mcp.types import TextContent, Tool
+
 from ..prompts.implementation_prompts import IMPLEMENTATION_PROMPTS
 
+
 def get_implementation_tools() -> List[Tool]:
-    """Return the list of implementation phase tools"""
+    """Return the list of implementation phase tools."""
     return [
         Tool(
             name="get_prompt",
@@ -18,18 +26,21 @@ def get_implementation_tools() -> List[Tool]:
                         "enum": [
                             "mock_library_creation",
                             "mock_consistency_check",
-                            "paired_implementation"
+                            "paired_implementation",
                         ],
-                        "description": "Name of the implementation phase prompt to get"
+                        "description": "Name of the implementation phase prompt to get",
                     }
                 },
-                "required": ["prompt_name"]
-            }
+                "required": ["prompt_name"],
+            },
         )
     ]
 
-async def handle_implementation_tool(name: str, arguments: dict, llm: BaseLanguageModel) -> Optional[List[TextContent]]:
-    """Handle implementation phase tool calls"""
+
+async def handle_implementation_tool(
+    name: str, arguments: dict, llm: BaseLanguageModel
+) -> Optional[List[TextContent]]:
+    """Handle implementation phase tool calls."""
     if name != "get_prompt":
         return None
 
@@ -40,7 +51,4 @@ async def handle_implementation_tool(name: str, arguments: dict, llm: BaseLangua
     if prompt_name not in IMPLEMENTATION_PROMPTS:
         raise ValueError(f"Unknown prompt: {prompt_name}")
 
-    return [TextContent(
-        type="text",
-        text=IMPLEMENTATION_PROMPTS[prompt_name]
-    )]
+    return [TextContent(type="text", text=IMPLEMENTATION_PROMPTS[prompt_name])]

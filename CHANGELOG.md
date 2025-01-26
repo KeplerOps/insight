@@ -52,4 +52,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial repository structure
 - Build configuration and dependency management
-- Test coverage improvements 
+- Test coverage improvements

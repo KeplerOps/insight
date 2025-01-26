@@ -1,4 +1,10 @@
-from typing import Dict, List, Optional, TypedDict, Literal
+"""Design phase prompt templates.
+
+This module contains prompt templates used in the design development phase
+for architecture design, component design, and design review.
+"""
+
+from typing import Dict, List, Literal, Optional, TypedDict
 
 # Phase 2: Design Development Prompts
 DESIGN_PROMPTS: Dict[str, str] = {
@@ -15,7 +21,6 @@ Create a design plan document organizing these levels and noting any critical in
 Do not proceed with any actual design yet. We will tackle each level systematically.
 
 STOP after the design plan is created and wait for the user to provide feedback.""",
-
     # When designing a specific level
     "level_design": """As a world-class software architect, first review the design plan document to ensure continuity with previous design decisions and patterns.
 
@@ -38,7 +43,7 @@ If this level involves file-level designs (modules, classes, etc.), each element
   - State requirements (if any)
   - Performance constraints (if any)
   - Thread safety guarantees (if any)
-  
+
 Method signature template:
 
 def process_user_data(
@@ -46,7 +51,7 @@ def process_user_data(
     validation_level: ValidationLevel = ValidationLevel.STANDARD
 ) -> ProcessedUserData:
     \"\"\"Process and validate user data according to specified rules.
-    
+
     Args:
         user_data: Dictionary containing user fields
             Required fields:
@@ -55,16 +60,16 @@ def process_user_data(
             Optional fields:
             - 'name': str, 1-100 chars, alphanumeric + spaces
             - 'preferences': Dict[str, str], max 50 items
-            
+
         validation_level: Level of validation to apply
             STANDARD: Basic format checks
             STRICT: Additional business rule validation
-            
+
     Returns:
         ProcessedUserData with normalized and validated fields
-        
+
     Raises:
-        ValidationError: 
+        ValidationError:
             - If required fields are missing
             - If field formats are invalid
             - If age is out of range
@@ -74,10 +79,10 @@ def process_user_data(
             - If business rules fail in STRICT mode
         RateLimitError:
             - If processing quota exceeded
-    
+
     Thread Safety:
         This method is thread-safe and can be called concurrently
-        
+
     Performance:
         Expected to complete within 100ms for standard validation
         May take up to 500ms for strict validation
@@ -116,7 +121,6 @@ Remember:
 Before proceeding, update the design plan document with any new insights or patterns discovered during this level's design.
 
 STOP after the design is created/updated and wait for the user to provide feedback.""",
-
     # When assessing a level's design
     "level_design_assessment": """As a world-class software architect, assess this level's design:
 
@@ -148,7 +152,6 @@ If no, what must be addressed first?
 Provide specific recommendations for any score below 10, keeping in mind the scope of the concept.
 
 STOP after the assessment and wait for the user to provide feedback.""",
-
     # When reviewing interfaces across levels
     "interface_review": """As a world-class software architect, review ALL interfaces defined so far across ALL levels designed to date:
 
@@ -163,7 +166,10 @@ Document any issues or patterns that should be addressed before proceeding to th
 STOP after the review and wait for the user to provide feedback.""",
 }
 
+
 class DesignPromptContext(TypedDict, total=False):
+    """Context information for design prompt generation."""
+
     level_number: Optional[int]  # Current level being designed
     total_levels: Optional[int]  # Total number of levels
     level_scope: Optional[str]  # Scope of current level
@@ -172,6 +178,14 @@ class DesignPromptContext(TypedDict, total=False):
     concerns: Optional[List[str]]  # Cross-cutting concerns
     interfaces: Optional[List[str]]  # Critical interfaces/interactions
 
+
 class GetDesignPromptRequest(TypedDict):
-    prompt_name: Literal["design_level_identification", "level_design", "level_design_assessment", "interface_review"]
+    """Request structure for getting a design prompt."""
+
+    prompt_name: Literal[
+        "design_level_identification",
+        "level_design",
+        "level_design_assessment",
+        "interface_review",
+    ]
     context: Optional[DesignPromptContext]

@@ -1,11 +1,19 @@
-import mcp.types as types
-from typing import Optional, List
-from mcp.types import Tool, TextContent
+"""Design phase handlers for the MCP workflow server.
+
+This module provides tools and handlers for the design development phase,
+including architecture design, component design, and design review.
+"""
+
+from typing import List, Optional
+
 from langchain.base_language import BaseLanguageModel
+from mcp.types import TextContent, Tool
+
 from ..prompts.design_prompts import DESIGN_PROMPTS
 
+
 def get_design_tools() -> List[Tool]:
-    """Return the list of design phase tools"""
+    """Return the list of design phase tools."""
     return [
         Tool(
             name="get_prompt",
@@ -17,20 +25,23 @@ def get_design_tools() -> List[Tool]:
                         "type": "string",
                         "enum": [
                             "design_level_identification",
-                            "level_design", 
+                            "level_design",
                             "level_design_assessment",
-                            "interface_review"
+                            "interface_review",
                         ],
-                        "description": "Name of the design phase prompt to get"
+                        "description": "Name of the design phase prompt to get",
                     }
                 },
-                "required": ["prompt_name"]
-            }
+                "required": ["prompt_name"],
+            },
         )
     ]
 
-async def handle_design_tool(name: str, arguments: dict, llm: BaseLanguageModel) -> Optional[List[TextContent]]:
-    """Handle design phase tool calls"""
+
+async def handle_design_tool(
+    name: str, arguments: dict, llm: BaseLanguageModel
+) -> Optional[List[TextContent]]:
+    """Handle design phase tool calls."""
     if name != "get_prompt":
         return None
 
@@ -41,7 +52,4 @@ async def handle_design_tool(name: str, arguments: dict, llm: BaseLanguageModel)
     if prompt_name not in DESIGN_PROMPTS:
         raise ValueError(f"Unknown prompt: {prompt_name}")
 
-    return [TextContent(
-        type="text",
-        text=DESIGN_PROMPTS[prompt_name]
-    )]
+    return [TextContent(type="text", text=DESIGN_PROMPTS[prompt_name])]
