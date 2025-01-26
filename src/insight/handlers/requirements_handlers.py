@@ -1,17 +1,18 @@
 import mcp.types as types
 import json
 import os
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain.chains import SequentialChain, LLMChain
+from mcp.types import Tool, TextContent
+from langchain.base_language import BaseLanguageModel
+from ..prompts.requirements_prompts import REQUIREMENTS_PROMPTS
 
-from ..requirements_prompts import REQUIREMENTS_PROMPTS
-
-def get_requirements_tools() -> list[types.Tool]:
+def get_requirements_tools() -> List[Tool]:
     """Return the list of requirements phase tools"""
     return [
-        types.Tool(
+        Tool(
             name="get_prompt",
             description="Get a requirements phase prompt to inject into Cline conversation",
             inputSchema={
@@ -39,7 +40,7 @@ def get_requirements_tools() -> list[types.Tool]:
                 "required": ["prompt_name"]
             }
         ),
-        types.Tool(
+        Tool(
             name="generate_requirements",
             description="Generate requirements document from a product brief",
             inputSchema={
@@ -55,7 +56,7 @@ def get_requirements_tools() -> list[types.Tool]:
         )
     ]
 
-async def handle_requirements_tool(name: str, arguments: Dict[str, Any], llm: Any) -> Optional[list[types.TextContent]]:
+async def handle_requirements_tool(name: str, arguments: dict, llm: BaseLanguageModel) -> Optional[List[TextContent]]:
     """Handle requirements phase tool calls"""
     if name == "get_prompt":
         if "prompt_name" not in arguments:
@@ -66,7 +67,7 @@ async def handle_requirements_tool(name: str, arguments: Dict[str, Any], llm: An
             return None
 
         prompt = REQUIREMENTS_PROMPTS[prompt_name]
-        return [types.TextContent(
+        return [TextContent(
             type="text",
             text=prompt
         )]
@@ -112,18 +113,17 @@ async def handle_requirements_tool(name: str, arguments: Dict[str, Any], llm: An
         result = await chain.ainvoke({"brief": brief_content})
         final_requirements = result["requirements"]
 
-        # Return requirements content with metadata
-        response = {
-            "requirements": final_requirements,
-            "metadata": {
-                "suggested_filename": "requirements.md",
-                "source_brief": brief_path
-            }
-        }
+        # Write requirements to file
+        requirements_path = os.path.join(
+            os.path.dirname(brief_path),
+            "requirements.md"
+        )
+        with open(requirements_path, 'w') as f:
+            f.write(final_requirements)
 
-        return [types.TextContent(
+        return [TextContent(
             type="text",
-            text=json.dumps(response, indent=2)
+            text=requirements_path
         )]
 
     return None

@@ -97,7 +97,7 @@ Do not include any comments or meta-commentary, just the requirements.
 ### Requirements Intermediate Review
 
 ```plaintext
-In the context of the concept and its scope, review your requirements. Assess. If there are areas for improvement rewrite them and provide the COMPLETE rewritten requirements without skipping anything. AVOID SCOPE CREEP. Do not include any comments or meta-commentary, just the requirements.
+In the context of the concept and its scope, review the requirements for coverage of the concept, coherence, consistency and orthogonality. Assess. If there are areas for improvement rewrite them and provide the COMPLETE rewritten requirements without skipping anything. AVOID SCOPE CREEP. Do not include any comments or meta-commentary, just the requirements.
 ```
 
 ### Requirements Assessment

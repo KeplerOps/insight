@@ -4,11 +4,16 @@ import mcp.types as types
 import mcp.server.stdio
 import asyncio
 import os
+import os.path
 from typing import Union
+from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 
 from .handlers import concept_handlers, requirements_handlers
+
+# Load environment variables from .env file
+load_dotenv()
 
 class WorkflowServer:
     def __init__(self):
@@ -28,17 +33,17 @@ class WorkflowServer:
         
         if provider == "openai":
             if not model:
-                model = "gpt-4-turbo-preview"
+                model = "gpt-4o"
             return ChatOpenAI(
                 model=model,
-                temperature=0
+                temperature=0.5  # Default temperature, handlers will adjust as needed
             )
         elif provider == "anthropic":
             if not model:
-                model = "claude-3-sonnet"
+                model = "claude-3-5-sonnet"
             return ChatAnthropic(
                 model=model,
-                temperature=0
+                temperature=0.5  # Default temperature, handlers will adjust as needed
             )
         else:
             raise ValueError(f"Unsupported LLM provider: {provider}")
@@ -55,7 +60,7 @@ class WorkflowServer:
         @self.server.call_tool()
         async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent]:
             # Try concept phase handlers first
-            result = await concept_handlers.handle_concept_tool(name, arguments)
+            result = await concept_handlers.handle_concept_tool(name, arguments, self.llm)
             if result is not None:
                 return result
 
