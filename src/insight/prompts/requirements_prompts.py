@@ -76,13 +76,14 @@ These are TECHNICAL requirements. Do not include any business requirements or no
 
 Write the requirements to an appropriate location in the project. If the user wants to make changes, update the requirements file.
 
-Do not include any comments or meta-commentary, just the requirements.""",
+Do not include any comments or meta-commentary, just the requirements.
 
-    # When reviewing generated requirements
-    "requirements_intermediate_review": """In the context of the concept and its scope, review the requirements for coverage of the concept, coherence, consistency and orthogonality. Assess. If there are areas for improvement rewrite them and provide the COMPLETE rewritten requirements without skipping anything. AVOID SCOPE CREEP. Do not include any comments or meta-commentary, just the requirements.""",
+STOP after writing the requirements to a file and wait for the user to provide feedback.""",
 
     # When assessing if requirements are ready for design
-    "requirements_assessment": """As a world-class software architect, on a scale of 0 to 10, how ready are these requirements to support implementation? Pay particular attention to completeness given the concept, consistency, orthogonality, and elegance. Everything in the requirements must be numbered.""",
+    "requirements_assessment": """As a world-class software architect, on a scale of 0 to 10, how ready are these requirements to support implementation? Pay particular attention to completeness given the concept, consistency, orthogonality, and elegance. Everything in the requirements must be numbered. Requirements must be appropriate to the scope of the concept.
+
+STOP after the assessment and wait for the user to provide feedback.""",
 }
 
 class RequirementsPromptContext(TypedDict, total=False):

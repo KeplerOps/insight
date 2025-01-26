@@ -12,7 +12,9 @@ DESIGN_PROMPTS: Dict[str, str] = {
 
 Create a design plan document organizing these levels and noting any critical interfaces or interactions that need special attention during design.
 
-Do not proceed with any actual design yet. We will tackle each level systematically.""",
+Do not proceed with any actual design yet. We will tackle each level systematically.
+
+STOP after the design plan is created and wait for the user to provide feedback.""",
 
     # When designing a specific level
     "level_design": """As a world-class software architect, first review the design plan document to ensure continuity with previous design decisions and patterns.
@@ -111,7 +113,9 @@ Remember:
 - Don't reinvent wheels - note where existing frameworks/libraries will be used
 - Security, logging, error handling, and monitoring considerations belong at every level
 
-Before proceeding, update the design plan document with any new insights or patterns discovered during this level's design.""",
+Before proceeding, update the design plan document with any new insights or patterns discovered during this level's design.
+
+STOP after the design is created/updated and wait for the user to provide feedback.""",
 
     # When assessing a level's design
     "level_design_assessment": """As a world-class software architect, assess this level's design:
@@ -139,7 +143,11 @@ Before proceeding, update the design plan document with any new insights or patt
 Provide specific recommendations for any score below 8.
 
 Is this level ready to support design of the next level? (Yes/No)
-If no, what must be addressed first?""",
+If no, what must be addressed first?
+
+Provide specific recommendations for any score below 10, keeping in mind the scope of the concept.
+
+STOP after the assessment and wait for the user to provide feedback.""",
 
     # When reviewing interfaces across levels
     "interface_review": """As a world-class software architect, review ALL interfaces defined so far across ALL levels designed to date:
@@ -150,7 +158,9 @@ If no, what must be addressed first?""",
 4. Check for appropriate abstraction and encapsulation
 5. Verify that security, logging, error handling, and monitoring are properly considered
 
-Document any issues or patterns that should be addressed before proceeding to the next level."""
+Document any issues or patterns that should be addressed before proceeding to the next level.
+
+STOP after the review and wait for the user to provide feedback.""",
 }
 
 class DesignPromptContext(TypedDict, total=False):

@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 
-from .handlers import concept_handlers, requirements_handlers
+from .handlers import concept_handlers, requirements_handlers, unit_test_handlers, implementation_handlers, integration_test_handlers
 
 # Load environment variables from .env file
 load_dotenv()
@@ -54,7 +54,10 @@ class WorkflowServer:
             # Combine tools from both phases
             return [
                 *concept_handlers.get_concept_tools(),
-                *requirements_handlers.get_requirements_tools()
+                *requirements_handlers.get_requirements_tools(),
+                *unit_test_handlers.get_unit_test_tools(),
+                *implementation_handlers.get_implementation_tools(),
+                *integration_test_handlers.get_integration_test_tools()
             ]
 
         @self.server.call_tool()
@@ -66,6 +69,21 @@ class WorkflowServer:
 
             # Try requirements phase handlers next
             result = await requirements_handlers.handle_requirements_tool(name, arguments, self.llm)
+            if result is not None:
+                return result
+
+            # Try unit test phase handlers next
+            result = await unit_test_handlers.handle_unit_test_tool(name, arguments, self.llm)
+            if result is not None:  
+                return result
+
+            # Try implementation phase handlers next
+            result = await implementation_handlers.handle_implementation_tool(name, arguments, self.llm)
+            if result is not None:
+                return result
+
+            # Try integration test phase handlers next
+            result = await integration_test_handlers.handle_integration_test_tool(name, arguments, self.llm)
             if result is not None:
                 return result
 

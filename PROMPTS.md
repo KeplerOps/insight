@@ -255,6 +255,8 @@ Provide specific recommendations for any score below 8.
 
 Is this level ready to support design of the next level? (Yes/No)
 If no, what must be addressed first?
+
+STOP after designing this level and wait for the user to provide feedback.
 ```
 
 ### Interface Review
@@ -345,6 +347,7 @@ For each method in the system, execute this sequence:
    - No mock modifications were needed
    - No interface changes were needed
    - No other components were modified
+   - Test coverage is at least 80%
 
 4. Debug History:
    BEFORE attempting ANY fix:
@@ -412,6 +415,50 @@ ALWAYS seek guidance when:
 Proceed to next method only when current method is complete and verified.
 ```
 
+### Implementation Assessment
+
+```plaintext
+As a world-class principal software engineer, assess the implementation on a scale of 0 to 10:
+
+1. Code Quality (0-10):
+   - Clean, readable, and maintainable code
+   - Follows language idioms and best practices
+   - Proper error handling and logging
+   - Efficient resource usage
+   - Clear naming and organization
+
+2. Design Adherence (0-10):
+   - Implements design specifications accurately
+   - Maintains intended abstractions
+   - Respects component boundaries
+   - Follows documented interfaces
+   - Handles all specified error conditions
+
+3. Robustness (0-10):
+   - Proper input validation
+   - Comprehensive error handling
+   - Thread safety (if applicable)
+   - Resource cleanup
+   - No edge case oversights
+
+4. Implementation Completeness (0-10):
+   - All required functionality implemented
+   - No TODOs or placeholder code
+   - All error conditions handled
+   - Required logging/monitoring in place
+   - Documentation complete and accurate
+
+Recommend seeking guidance from the user if any score is below 5.
+Provide specific recommendations for any score below 10, but avoid scope creep.
+
+Fail:
+- If any score is below 5.
+- Any unit tests are failing (you need to run them to check).
+- Unit test coverage is below 80%.
+
+STOP after the assessment and wait for the user to provide feedback.
+```
+
 ## Integration Testing
 
 ### Integration Testing
@@ -419,33 +466,140 @@ Proceed to next method only when current method is complete and verified.
 ```plaintext
 For each major subsystem or workflow in the system:
 
-1. Identify Integration Test Boundaries:
-   - Focus ONLY on end-to-end flows within the system
-   - Map the chain of internal components involved
-   - Identify where external dependencies intersect these flows
-   
-2. Mock Strategy:
-   - Mock ALL external dependencies (APIs, databases, services, etc.)
-   - Use existing mocks from mock library where possible
-   - Create minimal new mocks only when necessary
-   - Mock at the system boundary, not internal interfaces
+1. Write the Integration Test:
+   - Start with test skeleton and mocks
+   - Document the workflow being tested
+   - Map all components in the chain
+   - List all external dependencies
+   - Verify test FAILS initially
 
-3. Test Implementation:
+2. Test Structure:
+   - Clear workflow documentation
+   - Explicit setup of test data
+   - Well-defined entry and exit points
+   - Clear success/failure criteria
+   - Proper cleanup of resources
+
+3. Mock Strategy:
+   - Mock ALL external dependencies
+   - Use existing mocks from mock library
+   - Create minimal new mocks only when needed
+   - Mock at system boundary only
+   - Document mock behavior assumptions
+
+4. Test Implementation:
    - Test complete internal workflows
-   - Verify data flows through all internal components
-   - Test error propagation across component boundaries
+   - Verify data flows through components
+   - Test error propagation
    - Verify system-level error handling
-   - Test configuration changes that affect multiple components
+   - Test configuration variations
 
-4. Boundaries and Limitations:
-   - DO NOT test external system integration
-   - DO NOT test third-party API behavior
-   - DO NOT test infrastructure (databases, message queues, etc.)
-   - DO NOT test deployment scenarios
+5. Debug History:
+   BEFORE any fix attempt:
+   - Check Debug History for similar issues
+   - Document new test failures
+   - If pattern exists:
+     - DO NOT retry failed approaches
+     - DO NOT try minor variations
+     - Seek guidance
 
-Remember:
-- Integration tests verify internal system workflows
-- External dependencies are always mocked
-- Focus on component interaction, not individual component behavior
-- Test realistic failure scenarios across component boundaries
+   AFTER each fix:
+   - Document exact changes
+   - Note affected components
+   - Update failure patterns
+
+6. Boundaries and Limitations:
+   DO NOT:
+   - Test external system integration
+   - Test third-party API behavior
+   - Test infrastructure
+   - Test deployment scenarios
+   - Modify production code
+   - Change component interfaces
+
+If verification fails due to:
+
+A. Test Implementation Issues:
+   - If confined to current test:
+     - Check Debug History
+     - Revise test implementation
+     - Document changes
+     - Re-verify
+   - After 3 failures:
+     - Document pattern
+     - Include Debug History
+     - Seek guidance
+
+B. Component Integration Issues:
+   - STOP testing
+   - DO NOT modify components
+   - Document:
+     1. Integration issue found
+     2. Components involved
+     3. Expected vs actual behavior
+     4. Related Debug History
+   - Seek guidance
+
+C. Mock Issues:
+   - If mock behavior is wrong:
+     - Fix ONLY current test's mocks
+     - DO NOT modify other tests
+     - Document changes
+     - Re-verify
+   - If fix affects other tests:
+     - STOP
+     - Document dependencies
+     - Seek guidance
+
+ALWAYS seek guidance when:
+- Component changes needed
+- Interface changes needed
+- Mock changes affect multiple tests
+- Same failure occurs 3 times
+- Similar fixes fail twice
+- Fix breaks other tests
+- Integration assumptions incorrect
+
+### Integration Test Assessment
+
+```plaintext
+Verify integration test completeness:
+
+1. Workflow Coverage:
+   - All major workflows tested
+   - Component chains verified
+   - Error paths tested
+   - Configuration variations covered
+   - No critical paths untested
+
+2. Test Quality:
+   - Clear workflow documentation
+   - Proper mock usage
+   - Meaningful assertions
+   - Proper resource cleanup
+   - Independent tests
+
+3. Coverage Requirements:
+   - ALL tests MUST pass
+   - No flaky tests
+   - No external dependencies
+   - Clean test output
+   - Minimum 80% integration coverage
+
+4. Test Independence:
+   - No test order dependencies
+   - No shared state
+   - Proper setup/teardown
+   - Isolated test data
+   - Independent mock configurations
+
+Implementation MUST NOT proceed to next phase until:
+- All integration tests pass
+- 80% workflow coverage achieved
+- No unjustified gaps
+- No critical workflows untested
+- All debug history documented
+
+Provide specific recommendations for any gaps.
+STOP after assessment and wait for user feedback.
 ```
