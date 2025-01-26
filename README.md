@@ -1,6 +1,6 @@
 # Insight MCP Server
 
-A Model Context Protocol (MCP) server that provides workflow automation and development assistance through LLM integration.
+A Model Context Protocol (MCP) server that provides software developmentw automation and development assistance through LLM integration.
 
 ## Features
 
@@ -12,12 +12,14 @@ A Model Context Protocol (MCP) server that provides workflow automation and deve
 ## Installation
 
 1. Set up your environment variables in `.env`:
+
 ```bash
 LLM_PROVIDER=openai  # or anthropic
 LLM_MODEL=gpt-4o    # or claude-3-5-sonnet
 ```
 
 2. Install dependencies:
+
 ```bash
 pip install .
 ```
@@ -48,6 +50,7 @@ The server behavior can be customized through environment variables:
 ## Development
 
 The server is built using:
+
 - Python 3.12+
 - MCP SDK for server implementation
 - LangChain for LLM integration
