@@ -1,12 +1,11 @@
 # Insight MCP Server
 
-A Model Context Protocol (MCP) server that provides software developmentw automation and development assistance through LLM integration.
+A Model Context Protocol (MCP) server that provides software development automation and development assistance through LLM integration.
 
 ## Features
 
 - Flexible LLM provider support (OpenAI GPT-4 and Anthropic Claude)
 - Workflow automation through MCP tools
-- Stdio and SSE transport support
 - Environment-based configuration
 
 ## Installation
@@ -26,18 +25,10 @@ pip install .
 
 ## Usage
 
-The server can be run in two modes:
-
-### Stdio Mode (Default)
+Run the server:
 
 ```bash
 python -m insight
-```
-
-### SSE Mode
-
-```bash
-python -m insight --sse
 ```
 
 ## Configuration
@@ -54,7 +45,6 @@ The server is built using:
 - Python 3.12+
 - MCP SDK for server implementation
 - LangChain for LLM integration
-- FastAPI/Starlette for SSE transport
 
 ## License
 
