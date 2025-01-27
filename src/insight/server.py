@@ -17,6 +17,7 @@ from langchain_openai import ChatOpenAI
 from mcp.server.lowlevel import Server
 
 from .handlers import (
+    architecture_handlers,
     concept_handlers,
     implementation_handlers,
     integration_test_handlers,
@@ -79,6 +80,7 @@ class WorkflowServer:
             # Combine tools from both phases
             return [
                 *concept_handlers.get_concept_tools(),
+                *architecture_handlers.get_architecture_tools(),
                 *requirements_handlers.get_requirements_tools(),
                 *implementation_handlers.get_implementation_tools(),
                 *integration_test_handlers.get_integration_test_tools(),
@@ -90,6 +92,13 @@ class WorkflowServer:
         ) -> list[types.TextContent]:
             # Try concept phase handlers first
             result = await concept_handlers.handle_concept_tool(
+                name, arguments, self.llm
+            )
+            if result is not None:
+                return result
+
+            # Try architecture phase handlers next
+            result = await architecture_handlers.handle_architecture_tool(
                 name, arguments, self.llm
             )
             if result is not None:

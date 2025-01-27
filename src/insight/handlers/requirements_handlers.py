@@ -21,7 +21,10 @@ def get_requirements_tools() -> List[Tool]:
     return [
         Tool(
             name="get_prompt",
-            description="Get a requirements phase prompt to inject into Cline conversation",
+            description=(
+                "Get a prompt to help the user create requirements for a software "
+                "project to inject into Cline conversation"
+            ),
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -31,7 +34,7 @@ def get_requirements_tools() -> List[Tool]:
                             "requirements_creation",
                             "requirements_intermediate_review",
                         ],
-                        "description": "Name of the requirements phase prompt to get",
+                        "description": "Name of the requirements prompt to get",
                     },
                     "context": {
                         "type": "object",
