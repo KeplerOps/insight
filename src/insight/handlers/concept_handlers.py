@@ -18,7 +18,7 @@ def get_concept_tools() -> List[Tool]:
     return [
         Tool(
             name="get_concept_prompt",
-            description="Get a prompt for concept refinement phase",
+            description="Get a prompt for helping the user refine concepts for software projects.",
             inputSchema={
                 "type": "object",
                 "properties": {

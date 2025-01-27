@@ -17,7 +17,7 @@ def get_implementation_tools() -> List[Tool]:
     return [
         Tool(
             name="get_prompt",
-            description="Get an implementation phase prompt to inject into Cline conversation",
+            description="Get a software implementation prompt to inject into Cline conversation",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -28,7 +28,7 @@ def get_implementation_tools() -> List[Tool]:
                             "mock_consistency_check",
                             "paired_implementation",
                         ],
-                        "description": "Name of the implementation phase prompt to get",
+                        "description": "Name of the implementation prompt to get",
                     }
                 },
                 "required": ["prompt_name"],
