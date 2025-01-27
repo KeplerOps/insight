@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Fixed` for any bug fixes
 - `Security` in case of vulnerabilities
 
+## [2024-01-26] 0.1.1
+
+### Fixed
+
+- Fixed formatting in architecture prompts documentation
+- Redesigned architecture prompts to be more consistent and clear
+
 ## [2025-01-25] Current Release
 
 ### Changed
