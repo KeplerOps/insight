@@ -5,6 +5,7 @@ including requirements generation, assessment, and prompt management.
 """
 
 import os
+import sys
 from typing import List, Optional
 
 from langchain.base_language import BaseLanguageModel
@@ -153,11 +154,36 @@ async def handle_requirements_tool(
 
         requirements_path = arguments["requirements_path"]
         if not os.path.exists(requirements_path):
-            raise ValueError(f"Requirements file not found: {requirements_path}")
+            raise ValueError(f"Requirements path not found: {requirements_path}")
 
-        # Read the requirements
-        with open(requirements_path, "r") as f:
-            requirements_content = f.read()
+        # Handle directory or single file
+        requirements_content = ""
+        if os.path.isdir(requirements_path):
+            # Get all files in directory and sort them
+            files = sorted(
+                [
+                    f
+                    for f in os.listdir(requirements_path)
+                    if os.path.isfile(os.path.join(requirements_path, f))
+                ]
+            )
+
+            # Read and concatenate all files
+            for file in files:
+                file_path = os.path.join(requirements_path, file)
+                try:
+                    with open(file_path, "r") as f:
+                        requirements_content += f"\n\n# From {file}:\n\n"
+                        requirements_content += f.read()
+                except Exception as e:
+                    print(f"Warning: Could not read {file}: {str(e)}", file=sys.stderr)
+        else:
+            # Single file case
+            with open(requirements_path, "r") as f:
+                requirements_content = f.read()
+
+        if not requirements_content.strip():
+            raise ValueError("No readable requirements content found")
 
         # Setup the assessment chain
         assessment_chain = LLMChain(
