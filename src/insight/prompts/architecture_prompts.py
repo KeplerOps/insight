@@ -153,7 +153,7 @@ YOU MUST NOT PROCEED TO THE NEXT LEVEL UNTIL YOU HAVE PERMISSION FROM THE USER. 
 
 4. Integration (0-10):
    - How well does this level integrate with levels above?
-   - Are interfaces appropriate for levels below?
+   - How well do elements within this level integrate with each other?
    - Are cross-cutting concerns properly addressed?
 
 Provide specific recommendations for any score below 8.
